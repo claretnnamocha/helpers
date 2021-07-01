@@ -17,6 +17,7 @@ export const verify = async ({ token, secret }) => {
 
     return payload;
   } catch (error) {
+    console.log(error.message);
     return false;
   }
 };

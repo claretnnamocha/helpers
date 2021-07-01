@@ -1,3 +1,4 @@
 import * as payments from "./payments";
+import * as request from "./request";
 
-export { payments };
+export { payments, request };

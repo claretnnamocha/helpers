@@ -17,11 +17,14 @@
   "author": "Claret Nnamocha <devclareo@gmail.com>",
   "dependencies": {
     "@sendgrid/mail": "^7.4.5",
+    "@types/bluebird": "^3.5.35",
     "@types/jsonwebtoken": "^8.5.2",
     "@types/node": "^15.12.5",
+    "@types/node-fetch": "^2.5.10",
     "@types/uuid": "^8.3.0",
     "africastalking": "^0.5.4",
     "aws-sdk": "^2.937.0",
+    "bluebird": "^3.7.2",
     "cloudinary": "^1.26.1",
     "crypto": "^1.0.1",
     "crypto-random-string": "^4.0.0",
@@ -34,6 +37,7 @@
     "ts-node": "^10.0.0",
     "twilio": "^3.65.0",
     "typescript": "^4.3.5",
+    "url": "^0.11.0",
     "uuid": "^8.3.2"
   }
 }
