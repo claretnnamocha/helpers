@@ -2,6 +2,7 @@ import crypto from "crypto";
 import { payments } from "../types";
 
 const { PAYSTACK_SECRET_KEY } = process.env;
+export * as api from "paystack-node";
 
 export const handleWebhook = (params: payments.webhook) => {
   const { headers, body } = params;
