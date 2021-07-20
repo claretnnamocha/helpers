@@ -1,8 +1,8 @@
-import * as auth from "./auth";
-import * as http from "./http";
-import * as mail from "./mail";
-import * as payments from "./payments";
-import * as sms from "./sms";
-import * as storage from "./storage";
-
-export { http, auth, mail, sms, storage, payments };
+export * as auth from "./auth";
+export * as gis from "./gis";
+export * as http from "./http";
+export * as mail from "./mail";
+export * as math from "./math";
+export * as payments from "./payments";
+export * as sms from "./sms";
+export * as storage from "./storage";

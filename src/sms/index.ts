@@ -1,3 +1,3 @@
-import * as africastalking from "./africastalking";
-import * as twilio from "./twilio";
-export { twilio, africastalking };
+export * as africastalking from "./africastalking";
+export * as twilio from "./twilio";
+

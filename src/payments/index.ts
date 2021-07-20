@@ -1,5 +1,3 @@
-import * as coingate from "./coingate";
-import * as flutterwave from "./flutterwave";
-import * as paystack from "./paystack";
-
-export { coingate, paystack, flutterwave };
+export * as coingate from "./coingate";
+export * as flutterwave from "./flutterwave";
+export * as paystack from "./paystack";

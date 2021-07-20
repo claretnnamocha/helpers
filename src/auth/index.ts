@@ -1,3 +1,1 @@
-import * as jwt from "./jwt";
-
-export { jwt };
+export * as jwt from "./jwt";

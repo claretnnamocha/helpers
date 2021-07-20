@@ -1,3 +1,1 @@
-import * as sendgrid from "./sendgrid";
-
-export { sendgrid };
+export * as sendgrid from "./sendgrid";

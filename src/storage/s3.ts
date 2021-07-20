@@ -1,4 +1,4 @@
-import { S3 } from "aws-sdk";
+import S3 from "aws-sdk/clients/s3";
 import { fromBuffer } from "file-type";
 import fs from "fs";
 import { v4 as uuid } from "uuid";

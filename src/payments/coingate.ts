@@ -1,5 +1,5 @@
 import { v4 as uuid } from "uuid";
-import { request } from "../";
+import request from '../request'
 import { payments } from "../types";
 
 const { COINGATE_CALLBACK_URL, COINGATE_APIKEY } = process.env;

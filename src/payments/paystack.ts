@@ -3,10 +3,6 @@ import { payments } from "../types";
 
 const { PAYSTACK_SECRET_KEY } = process.env;
 
-export const initiateTransaction = (params: payments.initiateTransaction) => {
-  // todo: handle transaction init
-};
-
 export const handleWebhook = (params: payments.webhook) => {
   const { headers, body } = params;
 
