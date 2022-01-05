@@ -4,14 +4,10 @@ export interface webhook {
 }
 
 export interface initiateTransaction {
-  currency: string;
+  userId: string;
   wallet: string;
   metadata: any;
   description: string;
   type: string;
   amount: number;
-}
-
-export interface initiateCoingateTransaction extends initiateTransaction {
-  sandbox: boolean;
 }

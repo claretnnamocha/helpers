@@ -5,16 +5,6 @@ const {
   AFRICASTALKING_USERNAME,
   AFRICASTALKING_SENDER_ID,
 } = process.env;
-let SMS: any, credentials: any;
-
-const init = () => {
-  credentials = {
-    apiKey: AFRICASTALKING_APIKEY,
-    username: AFRICASTALKING_USERNAME,
-  };
-
-  SMS = Africastalking(credentials).SMS;
-};
 
 export const send = async (
   to: string,
@@ -22,7 +12,13 @@ export const send = async (
   from: string = AFRICASTALKING_SENDER_ID
 ) => {
   try {
-    init();
+    const credentials = {
+      apiKey: AFRICASTALKING_APIKEY,
+      username: AFRICASTALKING_USERNAME,
+    };
+
+    const { SMS } = Africastalking(credentials);
+
     const message = await SMS.send({ to, from, message: body });
 
     return message != null;

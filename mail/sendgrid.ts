@@ -1,23 +1,26 @@
 import SendGridMail from "@sendgrid/mail";
 
-const { SENDGRID_API_KEY } = process.env;
+const { SENDGRID_API_KEY, EMAIL_FROM, EMAIL_NAME } = process.env;
 
 export const send = async (
   to: string,
   subject: string,
   text: string,
   html: string = null,
-  from: string = "Claret Nnamocha <devclareo@gmail.com>"
+  from: string = EMAIL_FROM,
+  fromName: string = EMAIL_NAME
 ) => {
   try {
     SendGridMail.setApiKey(SENDGRID_API_KEY);
+
+    from = `${fromName} <${from}>`;
 
     const msg = { to, subject, text, html, from };
 
     await SendGridMail.send(msg);
 
-    return { status: true, message: "Mail sent successfully!" };
+    return true;
   } catch (error) {
-    return { status: false, message: "Mail failed to send, try again later!" };
+    return false;
   }
 };
