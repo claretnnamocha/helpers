@@ -4,5 +4,5 @@ export * as mail from "./mail";
 export * as payments from "./payments";
 export { response } from "./response";
 export * as sms from "./sms";
-export * as storage from "./storage";
+// export * as storage from "./storage";
 export * as utilities from "./utilities";
