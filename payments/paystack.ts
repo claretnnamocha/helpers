@@ -1,6 +1,5 @@
 import crypto from "crypto";
 import fetch from "node-fetch";
-
 import { payments } from "../types";
 
 const { PAYSTACK_SECRET_KEY } = process.env;
@@ -24,7 +23,7 @@ const request = async ({ url, body = {}, method = "get" }) => {
   } catch (error) {
     return {
       status: false,
-      message: "An error occured calling paystack"
+      message: "An error occured calling paystack",
     };
   }
 };

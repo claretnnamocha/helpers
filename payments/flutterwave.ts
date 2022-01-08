@@ -1,5 +1,5 @@
+import fetch from "node-fetch";
 import { v4 as uuid } from "uuid";
-
 import { payments } from "../types";
 
 const { FLUTTERWAVE_SECRET_KEY, FLUTTERWAVE_HASH } = process.env;
@@ -24,7 +24,7 @@ const request = async ({ url, body = {}, method = "get" }) => {
   } catch (error) {
     return {
       status: false,
-      message: "An error occured calling flutterwave"
+      message: "An error occured calling flutterwave",
     };
   }
 };
