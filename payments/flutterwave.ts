@@ -29,10 +29,6 @@ const request = async ({ url, body = {}, method = "get" }) => {
   }
 };
 
-export const initiateTransaction = (params: payments.initiateTransaction) => {
-  // todo: handle payments init
-};
-
 export const getBanks = async () => {
   let response = await request({ url: "banks/NG" });
   return response;
@@ -41,21 +37,19 @@ export const getBanks = async () => {
 export const resolveBank = async ({
   account_number,
   bank_code: account_bank,
-}) => {
-  let response = await request({
+}: payments.resolveBank) =>
+  await request({
     url: `accounts/resolve`,
     body: { account_number, account_bank },
     method: "post",
   });
-  return response;
-};
 
 export const transfer = async ({
   account_number,
   bank_code: account_bank,
   amount,
   reason: narration,
-}) => {
+}: payments.transfer) => {
   let response = await request({
     url: `transfers`,
     body: {

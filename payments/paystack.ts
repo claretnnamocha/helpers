@@ -28,14 +28,13 @@ const request = async ({ url, body = {}, method = "get" }) => {
   }
 };
 
-export const initiateTransaction = (params: payments.initiateTransaction) => {
-  // todo: handle payments init
-};
-
 export const getBanks = async () =>
   await request({ url: "bank?country=nigeria&use_cursor=false" });
 
-export const resolveBank = async ({ account_number, bank_code }) =>
+export const resolveBank = async ({
+  account_number,
+  bank_code,
+}: payments.resolveBank) =>
   await request({
     url: `bank/resolve?account_number=${account_number}&bank_code=${bank_code}`,
   });
@@ -46,7 +45,7 @@ export const transfer = async ({
   bank_code,
   amount,
   reason,
-}) => {
+}: payments.transfer) => {
   const {
     status: trs,
     message: trm,

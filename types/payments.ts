@@ -11,3 +11,16 @@ export interface initiateTransaction {
   type: string;
   amount: number;
 }
+
+export interface resolveBank {
+  account_number: string;
+  bank_code: string;
+}
+
+export interface transfer {
+  account_number: number;
+  name?: string;
+  bank_code: string;
+  amount: number;
+  reason: string;
+}

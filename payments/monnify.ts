@@ -1,5 +1,6 @@
 import fetch from "node-fetch";
 import { v4 as uuid } from "uuid";
+import { payments } from "../types";
 
 const {
   MONNIFY_API_KEY,
@@ -61,7 +62,7 @@ const request = async ({ url, body = {}, method = "get" }) => {
   } catch (error) {
     return {
       status: false,
-      message: "An error occured calling monnify"
+      message: "An error occured calling monnify",
     };
   }
 };
@@ -90,7 +91,10 @@ export const deallocateAccount = async ({ reference }) =>
 
 export const getBanks = async () => await request({ url: "v1/banks" });
 
-export const resolveBank = async ({ account_number, bank_code }) =>
+export const resolveBank = async ({
+  account_number,
+  bank_code,
+}: payments.resolveBank) =>
   await request({
     url: `v1/disbursements/account/validate?accountNumber=${account_number}&bankCode=${bank_code}`,
   });
@@ -100,7 +104,7 @@ export const transfer = async ({
   bank_code: destinationBankCode,
   amount,
   reason: narration,
-}) =>
+}: payments.transfer) =>
   await request({
     url: `v2/disbursements/single`,
     body: {

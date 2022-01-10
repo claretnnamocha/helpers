@@ -45,21 +45,7 @@ export const initiateTransaction = async (
   if (!checkOut.id) {
     return false;
   }
-
-  // todo: handle payments init checkOut object
-  //   {
-  //     "id": int,
-  //     "order_id": string,
-  //     "pay_amount": string (number),
-  //     "pay_currency": string,
-  //     "payment_address": string,
-  //     "payment_url": string,
-  //     "price_amount": string (number),
-  //     "price_currency": "ngn",
-  //     "receive_amount": string (number),
-  //     "receive_currency": "ngn",
-  //     "status": "pending",
-  // }
+  return checkOut;
 };
 
 export const handleWebhook = (params: payments.webhook) => {
