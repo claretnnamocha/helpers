@@ -1,34 +1,36 @@
-import SibApiV3Sdk from "sib-api-v3-sdk";
+import { generateReciepient } from ".";
+import { mail } from "../types";
 
 const { SENDINBLUE_API_KEY, EMAIL_FROM, EMAIL_NAME } = process.env;
 
-export const send = async (
-  to: string,
-  subject: string,
-  text: string,
-  html: string = null,
-  from: string = EMAIL_FROM,
-  fromName: string = EMAIL_NAME
-) => {
+export const send = async ({
+  to,
+  subject,
+  text = "",
+  html = "",
+  from = EMAIL_FROM,
+  fromName = EMAIL_NAME,
+}: mail.send) => {
   try {
-    let defaultClient = SibApiV3Sdk.ApiClient.instance;
+    const body = {
+      sender: { name: fromName, email: from },
+      to: generateReciepient(to),
+      subject,
+      htmlContent: html,
+      textContent: text,
+    };
 
-    let apiKey = defaultClient.authentications["api-key"];
-    apiKey.apiKey = SENDINBLUE_API_KEY;
+    const response = await fetch("https://api.sendinblue.com/v3/smtp/email", {
+      method: "post",
+      headers: {
+        "api-key": SENDINBLUE_API_KEY,
+        "content-type": "application/json",
+        accept: "application/json",
+      },
+      body: JSON.stringify(body),
+    });
 
-    let apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
-
-    let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
-
-    sendSmtpEmail.sender = { name: fromName, email: from };
-    sendSmtpEmail.subject = subject;
-    sendSmtpEmail.htmlContent = html;
-    sendSmtpEmail.textContent = text;
-
-    sendSmtpEmail.to = [{ email: to }];
-    await apiInstance.sendTransacEmail(sendSmtpEmail);
-
-    return true;
+    return response.status === 201;
   } catch (error) {
     return false;
   }

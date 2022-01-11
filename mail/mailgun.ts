@@ -1,5 +1,6 @@
-import formData from "form-data";
-import Mailgun from "mailgun.js";
+import fetch from "node-fetch";
+import { generateReciepient2 } from ".";
+import { mail } from "../types";
 
 const {
   MAILGUN_API_KEY,
@@ -9,32 +10,39 @@ const {
   EMAIL_NAME,
 } = process.env;
 
-export const send = async (
-  to: string,
-  subject: string,
-  text: string,
-  html: string = null,
-  from: string = EMAIL_FROM,
-  fromName: string = EMAIL_NAME
-) => {
+export const send = async ({
+  to,
+  subject,
+  text = "",
+  html = "",
+  from = EMAIL_FROM,
+  fromName = EMAIL_NAME,
+}: mail.send) => {
   try {
-    const mailgun = new Mailgun(formData);
-    const mg = mailgun.client({
-      username: MAILGUN_USERNAME,
-      key: MAILGUN_API_KEY,
-    });
-
     from = `${fromName} <${from}>`;
 
-    await mg.messages.create(MAILGUN_DOMAIN, {
-      from,
-      to: [to],
-      subject,
-      text,
-      html,
-    });
+    const fd = new FormData();
 
-    return true;
+    fd.append("from", from);
+    fd.append("to", generateReciepient2(to));
+    fd.append("subject", subject);
+    fd.append("text", text);
+    fd.append("html", html);
+
+    const response = await fetch(
+      `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/message`,
+      {
+        method: "post",
+        headers: {
+          Authorization: `Basic ${Buffer.from(
+            `api:${MAILGUN_API_KEY}`
+          ).toString("base64")}`,
+        },
+        body: fd,
+      }
+    );
+
+    return response.status === 200;
   } catch (error) {
     return false;
   }

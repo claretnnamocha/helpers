@@ -1,4 +1,5 @@
 import fetch from "node-fetch";
+import { generateReciepient } from ".";
 import { mail } from "../types";
 
 const { SENDGRID_API_KEY, EMAIL_FROM, EMAIL_NAME } = process.env;
@@ -6,22 +7,14 @@ const { SENDGRID_API_KEY, EMAIL_FROM, EMAIL_NAME } = process.env;
 export const send = async ({
   to,
   subject,
-  text = null,
-  html = null,
+  text = "",
+  html = "",
   from = EMAIL_FROM,
   fromName = EMAIL_NAME,
 }: mail.send) => {
   try {
-    let reciepients: any;
-
-    if (typeof to === "string") {
-      reciepients = [{ email: to }];
-    } else {
-      reciepients = to.map((email) => ({ email }));
-    }
-
     const body = {
-      personalizations: [{ to: reciepients }],
+      personalizations: [{ to: generateReciepient(to) }],
       from: { email: from, name: fromName },
       subject,
       content: [
