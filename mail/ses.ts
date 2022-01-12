@@ -1,16 +1,18 @@
 import SES from "aws-sdk/clients/ses";
+import { generateReciepient3 } from ".";
+import { mail } from "../types";
 
 const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, EMAIL_FROM, EMAIL_NAME } =
   process.env;
 
-export const send = async (
-  to: string,
-  subject: string,
-  text: string,
-  html: string = null,
-  from: string = EMAIL_FROM,
-  fromName: string = EMAIL_NAME
-) => {
+export const send = async ({
+  to,
+  subject,
+  text,
+  html = null,
+  from = EMAIL_FROM,
+  fromName = EMAIL_NAME,
+}: mail.send) => {
   try {
     const ses = new SES({
       accessKeyId: AWS_ACCESS_KEY_ID,
@@ -23,7 +25,7 @@ export const send = async (
 
     const params = {
       Destination: {
-        ToAddresses: [to],
+        ToAddresses: generateReciepient3(to),
       },
       Source: from,
       Message: {

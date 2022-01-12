@@ -26,7 +26,7 @@ export const send = async ({
     const response = await fetch("https://api.sendgrid.com/v3/mail/send", {
       method: "post",
       headers: {
-        Authorization: `Bearer ${SENDGRID_API_KEY}`,
+        authorization: `Bearer ${SENDGRID_API_KEY}`,
         "content-type": "application/json",
       },
       body: JSON.stringify(body),

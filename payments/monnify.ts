@@ -13,7 +13,7 @@ const baseURL = "https://sandbox.monnify.com/api";
 const auth = async () => {
   let response: any = await fetch(`${baseURL}/v1/auth/login`, {
     headers: {
-      Authorization: `Basic ${Buffer.from(
+      authorization: `Basic ${Buffer.from(
         `${MONNIFY_API_KEY}:${MONNIFY_SECERET}`
       ).toString("base64")}`,
       "content-type": "application/json",
@@ -40,7 +40,7 @@ const request = async ({ url, body = {}, method = "get" }) => {
       let response: any = await fetch(`${baseURL}/${url}`, {
         method,
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          authorization: `Bearer ${accessToken}`,
           "content-type": "application/json",
         },
         body: Object.keys(body).length ? JSON.stringify(body) : null,

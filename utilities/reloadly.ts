@@ -5,7 +5,7 @@ const { RELOADLY_CLIENT_ID, RELOADLY_CLIENT_SECRET } = process.env;
 const auth = async () => {
   let response: any = await fetch("https://auth.reloadly.com/oauth/token", {
     method: "post",
-    headers: { "Content-Type": "application/json" },
+    headers: { "content-type": "application/json" },
     body: JSON.stringify({
       client_id: RELOADLY_CLIENT_ID,
       client_secret: RELOADLY_CLIENT_SECRET,
@@ -29,8 +29,8 @@ export const request = async ({ url, method, body = null }) => {
     let response: any = await fetch(`https://topups.reloadly.com/${url}`, {
       method,
       headers: {
-        Authorization: `Bearer ${access_token}`,
-        "Content-Type": "application/json",
+        authorization: `Bearer ${access_token}`,
+        "content-type": "application/json",
       },
       body,
     });

@@ -20,7 +20,7 @@ export const initiateTransaction = async (
       callback_url: COINGATE_CALLBACK_URL,
     }),
     headers: {
-      Authorization: COINGATE_APIKEY,
+      authorization: COINGATE_APIKEY,
       "content-type": "application/json",
     },
   });
@@ -35,7 +35,7 @@ export const initiateTransaction = async (
     method: "post",
     body: JSON.stringify({ pay_currency: params.metadata.currency }),
     headers: {
-      Authorization: COINGATE_APIKEY,
+      authorization: COINGATE_APIKEY,
       "content-type": "application/json",
     },
   });

@@ -6,7 +6,7 @@ const baseURL = "https://sandbox.interswitchng.com";
 const auth = async () => {
   let response: any = await fetch(`${baseURL}/passport/oauth/token`, {
     headers: {
-      Authorization: `Basic ${Buffer.from(
+      authorization: `Basic ${Buffer.from(
         `${INTERSWITCH_CLIENT_ID}:${INTERSWITCH_SECRET}`
       ).toString("base64")}`,
       "content-type": "application/json",
@@ -31,7 +31,7 @@ const request = async ({ url, body = {}, method = "get" }) => {
     let response: any = await fetch(`${baseURL}/api/v2/quickteller/${url}`, {
       method,
       headers: {
-        Authorization: `InterswitchAuth ${access_token}`,
+        authorization: `InterswitchAuth ${access_token}`,
         "content-type": "application/json",
       },
       body: Object.keys(body).length ? JSON.stringify(body) : null,

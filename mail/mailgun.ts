@@ -34,7 +34,7 @@ export const send = async ({
       {
         method: "post",
         headers: {
-          Authorization: `Basic ${Buffer.from(
+          authorization: `Basic ${Buffer.from(
             `api:${MAILGUN_API_KEY}`
           ).toString("base64")}`,
         },

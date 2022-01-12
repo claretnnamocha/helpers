@@ -12,7 +12,7 @@ const request = async ({ url, body = {}, method = "get" }) => {
       body: Object.keys(body).length ? JSON.stringify(body) : null,
       method,
       headers: {
-        Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
+        authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
         "content-type": "application/json",
       },
     });
