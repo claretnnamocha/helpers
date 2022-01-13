@@ -1,21 +1,20 @@
 import JWT from "jsonwebtoken";
-import { env } from "../configs";
+import { jwt } from "./types";
 
-export const generate = (payload: any) => {
-  return JWT.sign({ ...payload, timestamp: Date.now() }, env.jwtSecret);
+const { JWT_SECRET } = process.env;
+
+export const generate = (payload: jwt.generate) => {
+  return JWT.sign({ ...payload, timestamp: Date.now() }, JWT_SECRET);
 };
 
 export const verify = async (token: string) => {
   try {
     token = token.replace("Bearer ", "");
-    const data: any = JWT.verify(token, env.jwtSecret);
+    const data: jwt.generate = JWT.verify(token, JWT_SECRET);
 
-    let {
-      data: { payload, loginValidFrom },
-    } = data;
-    if (!payload) return false;
+    if (!Object.keys(data).length) return false;
 
-    return { payload, loginValidFrom };
+    return data;
   } catch (error) {
     return false;
   }
