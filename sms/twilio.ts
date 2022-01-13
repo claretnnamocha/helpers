@@ -1,4 +1,6 @@
 import fetch from "node-fetch";
+import { generateReciepient } from ".";
+import { sms } from "../types";
 
 const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_SENDER_ID } = process.env;
 
@@ -6,9 +8,12 @@ export const send = async ({
   to: To,
   body: Body,
   from: From = TWILIO_SENDER_ID,
-}) => {
+}: sms.send) => {
   try {
+    To = generateReciepient(To);
+
     const details = { From, Body, To };
+
     let body: string | Array<string> = [];
     for (var property in details) {
       var encodedKey = encodeURIComponent(property);
