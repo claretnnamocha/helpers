@@ -10,7 +10,7 @@ export const generate = (payload: jwt.generate) => {
 export const verify = async (token: string) => {
   try {
     token = token.replace("Bearer ", "");
-    const data: JwtPayload = JWT.verify(token, JWT_SECRET);
+    const data: JwtPayload | any = JWT.verify(token, JWT_SECRET);
 
     if (!Object.keys(data).length) return false;
 
