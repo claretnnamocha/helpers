@@ -1,6 +1,7 @@
 import fetch from "node-fetch";
 import { generateReciepient2 } from ".";
 import { mail } from "../types";
+import FormData = require("form-data");
 
 const {
   MAILGUN_API_KEY,
