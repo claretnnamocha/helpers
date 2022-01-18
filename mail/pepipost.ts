@@ -32,7 +32,7 @@ export const send = async ({
 
     const d = await response.text();
 
-    console.log(d)
+    console.log(d);
 
     return true;
   } catch (error) {
