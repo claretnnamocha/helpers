@@ -1,3 +1,4 @@
+import fetch from "node-fetch";
 import { generateReciepient } from ".";
 import { sms } from "../types";
 
@@ -5,16 +6,17 @@ const {
   AFRICASTALKING_APIKEY: apiKey,
   AFRICASTALKING_USERNAME: username,
   AFRICASTALKING_SENDER_ID,
+  AFRICASTALKING_SANDBOX,
 } = process.env;
 
 export const send = async ({
   to,
   body: message,
-  from = AFRICASTALKING_SENDER_ID,
+  from = AFRICASTALKING_SANDBOX ? null : AFRICASTALKING_SENDER_ID,
 }: sms.send) => {
   try {
     to = generateReciepient(to);
-    const details = { username, from, message, to };
+    const details = { username, message, from, to };
 
     let body: string | Array<string> = [];
     for (var property in details) {
@@ -25,7 +27,9 @@ export const send = async ({
     body = body.join("&");
 
     const response = await fetch(
-      `https://api.africastalking.com/version1/messaging`,
+      AFRICASTALKING_SANDBOX
+        ? "https://api.sandbox.africastalking.com/version1/messaging"
+        : `https://api.africastalking.com/version1/messaging`,
       {
         method: "post",
         body,
@@ -37,8 +41,14 @@ export const send = async ({
       }
     );
 
-    return [100, 101, 102].includes(response.status);
+    const r = await response.json();
+
+    console.log(JSON.stringify(r));
+
+    return response.status === 201;
   } catch (error) {
+    console.log(error);
+
     return false;
   }
 };

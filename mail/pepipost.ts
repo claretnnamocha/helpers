@@ -27,6 +27,8 @@ export const send = async ({
 
     return true;
   } catch (error) {
+    console.log(error);
+    
     return false;
   }
 };
