@@ -23,12 +23,21 @@ export const send = async ({
       }),
     };
 
-    await fetch("https://api.pepipost.com/v5.1/mail/send", options);
+    const response = await fetch(
+      "https://api.pepipost.com/v5.1/mail/send",
+      options
+    );
+
+    console.log(response.status);
+
+    const d = await response.text();
+
+    console.log(d);
 
     return true;
   } catch (error) {
     console.log(error);
-    
+
     return false;
   }
 };
