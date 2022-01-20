@@ -1,6 +1,6 @@
 {
   "name": "helpers",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "main": "index.ts",
   "repository": "https://github.com/claretnnamocha/helpers.git",
   "author": "claretnnamocha <devclareo@gmail.com>",
