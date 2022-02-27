@@ -1,10 +1,14 @@
 import { v2 as cloudinary } from "cloudinary";
 import { fromBuffer } from "file-type";
+import fs from "fs";
 
 export const upload = async (payload: any) => {
   try {
     const upload = await cloudinary.uploader.upload(payload.path);
-    return upload.secure_url;
+
+    const { mime } = await fromBuffer(fs.readFileSync(payload.path));
+
+    return { url: upload.secure_url, mime };
   } catch (error) {
     return false;
   }
@@ -12,13 +16,13 @@ export const upload = async (payload: any) => {
 
 export const uploadBase64 = async (payloadString: string) => {
   try {
-    const mimeInfo = await fromBuffer(Buffer.from(payloadString, "base64"));
+    const { mime } = await fromBuffer(Buffer.from(payloadString, "base64"));
     payloadString = payloadString.startsWith("data:")
       ? payloadString
-      : `data:${mimeInfo.mime};base64,${payloadString}`;
+      : `data:${mime};base64,${payloadString}`;
 
     const upload = await cloudinary.uploader.upload(payloadString);
-    return upload.secure_url;
+    return { url: upload.secure_url, mime };
   } catch (error) {
     return false;
   }
