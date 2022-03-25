@@ -96,3 +96,9 @@ export const handleWebhook = (params: payments.webhook) => {
 
   return payload;
 };
+
+export const resolveCardBin = async ({ bin }: payments.resolveCardBin) =>
+  await request({
+    url: `decision/bin/${bin}`,
+    method: "get",
+  });

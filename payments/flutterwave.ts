@@ -78,3 +78,15 @@ export const handleWebhook = (params: payments.webhook) => {
 
   return payload;
 };
+
+export const resolveBVN = async ({ bvn }: payments.resolveBVN) =>
+  await request({
+    url: `kyc/bvns/${bvn}`,
+    method: "get",
+  });
+
+export const resolveCardBin = async ({ bin }: payments.resolveCardBin) =>
+  await request({
+    url: `card-bins/${bin}`,
+    method: "get",
+  });

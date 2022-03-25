@@ -17,6 +17,14 @@ export interface resolveBank {
   bank_code: string;
 }
 
+export interface resolveBVN {
+  bvn: string;
+}
+
+export interface resolveCardBin {
+  bin: string;
+}
+
 export interface transfer {
   account_number: number;
   name?: string;
