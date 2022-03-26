@@ -1,5 +1,5 @@
 import { JsonRpcProvider, TransactionReceipt } from "@ethersproject/providers";
-import { BigNumber, Wallet } from "ethers";
+import ethers, { BigNumber, Wallet } from "ethers";
 import { parseEther } from "ethers/lib/utils";
 import Web3 from "web3";
 import {
@@ -7,11 +7,15 @@ import {
   EthWallet,
   GetBalance,
   ImportAddress,
+  ImportAddressFromMnemonic,
   Network,
   SendEth,
 } from "../types/ethersjs";
+import { createBtcAddressFromMnemonic } from "./bitcoinjs";
 
-const { INFURA_API_KEY } = process.env;
+// const { INFURA_API_KEY } = process.env;
+
+const INFURA_API_KEY = "a5ef69f8160b42be9586ac7fda90abec";
 
 const getEthRpcLink = ({ testnet = false }: Network): string => {
   if (!INFURA_API_KEY) throw new Error("Please provide INFURA_API_KEY");
@@ -20,21 +24,16 @@ const getEthRpcLink = ({ testnet = false }: Network): string => {
     : `https://mainnet.infura.io/v3/${INFURA_API_KEY}`;
 };
 
-const getWeb3 = ({ testnet = false }: Network): Web3 => {
-  const link: string = getEthRpcLink({ testnet });
-  const provider = new Web3.providers.HttpProvider(link);
-  return new Web3(provider);
-};
-
 const getProvider = ({ testnet = false }: Network): JsonRpcProvider => {
   const link: string = getEthRpcLink({ testnet });
   return new JsonRpcProvider(link);
 };
 
 export const createEthAddress = ({ testnet = false }: Network): EthWallet => {
-  const web3: Web3 = getWeb3({ testnet });
-  const { address, privateKey } = web3.eth.accounts.create();
-
+  const provider = getProvider({ testnet });
+  const { address, privateKey } = Wallet.createRandom({
+    JsonRpcProvider: provider,
+  });
   return { address, privateKey };
 };
 
@@ -42,8 +41,8 @@ export const importEthAddress = ({
   privateKey,
   testnet = false,
 }: ImportAddress): EthWallet => {
-  const web3: Web3 = getWeb3({ testnet });
-  const { address } = web3.eth.accounts.privateKeyToAccount(privateKey);
+  const provider = getProvider({ testnet });
+  const { address } = new Wallet(privateKey, provider);
 
   return { address, privateKey };
 };
@@ -56,7 +55,6 @@ export const estimateEthGasFee = async ({
 }: SendEth): Promise<Amount> => {
   const to = Web3.utils.toChecksumAddress(address);
   let ether: any = parseEther(amount.toString());
-
   const provider: JsonRpcProvider = getProvider({ testnet });
   const { address: sender }: EthWallet = importEthAddress({
     testnet,
@@ -117,4 +115,15 @@ export const getEthBalance = async ({
   const ethers = wei / Math.pow(10, 18);
 
   return { wei, ethers };
+};
+
+export const createEthAddressFromMnemonic = ({
+  mnemonic,
+  index,
+}: ImportAddressFromMnemonic): EthWallet => {
+  const { address, privateKey } = Wallet.fromMnemonic(
+    mnemonic,
+    `m/44'/60'/0'/0/${index}`
+  );
+  return { address, privateKey };
 };

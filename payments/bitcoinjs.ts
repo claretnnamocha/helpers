@@ -1,6 +1,8 @@
 import * as bitcoin from "bitcoinjs-lib";
 import { Network } from "bitcoinjs-lib";
 import ECPairFactory from "ecpair";
+import {mnemonicToSeedSync} from "bip39";
+import BIP32Factory from "bip32";
 import fetch from "node-fetch";
 import * as ecc from "tiny-secp256k1";
 import {
@@ -14,9 +16,11 @@ import {
   TrySend,
   UTXO,
   Wallet,
+  ImportAddressFromMnemonic,
 } from "../types/bitcoinjs";
 
 const ECPair = ECPairFactory(ecc);
+const bip32 = BIP32Factory(ecc);
 
 const getBtcNetwork = ({ testnet }): Network =>
   testnet ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
@@ -35,10 +39,12 @@ const trySendBtc = async ({
   ): boolean => ECPair.fromPublicKey(pubkey).verify(msghash, signature);
 
   const network = getBtcNetwork({ testnet });
-  const { address: sender, keyPair }: Wallet = importBtcAddress({
+  const { address: sender, privateKey }: Wallet = importBtcAddress({
     wif,
     testnet,
   });
+
+  const keyPair = ECPair.fromPrivateKey(Buffer.from(privateKey));
 
   const { satoshi: balance }: Amount = await getBtcBalance({
     address: sender,
@@ -129,7 +135,7 @@ export const createBtcAddress = ({
   const wif = keyPair.toWIF();
   const privateKey = keyPair.privateKey.toString();
 
-  return { wif, address, privateKey, keyPair };
+  return { wif, address, privateKey };
 };
 
 export const importBtcAddress = ({
@@ -146,7 +152,7 @@ export const importBtcAddress = ({
 
   const privateKey = keyPair.privateKey.toString();
 
-  return { wif, address, privateKey, keyPair };
+  return { wif, address, privateKey };
 };
 
 export const estimateBtcMinerFee = async ({
@@ -214,4 +220,29 @@ export const getBtcBalance = async ({
   const btc: number = satoshi / Math.pow(10, 8);
 
   return { satoshi, btc };
+};
+
+export const createBtcAddressFromMnemonic = ({
+  mnemonic,
+  index,
+  testnet = false,
+}: ImportAddressFromMnemonic): Wallet => {
+  const network = getBtcNetwork({ testnet });
+
+  const seed = mnemonicToSeedSync(mnemonic);
+  const root = bip32.fromSeed(seed);
+
+  const path = `m/49'/1'/0'/0/${index}`;
+  const child = root.derivePath(path);
+
+  const { address } = bitcoin.payments.p2pkh({
+    pubkey: child.publicKey,
+    network,
+  });
+
+  return {
+    address,
+    privateKey: child.privateKey.toString(),
+    wif: child.toWIF(),
+  };
 };

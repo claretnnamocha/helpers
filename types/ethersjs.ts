@@ -12,7 +12,6 @@ export interface ImportAddress {
   privateKey: string;
   testnet?: boolean;
 }
-
 export interface Network {
   testnet?: boolean;
 }
@@ -36,4 +35,9 @@ export interface SendEth {
   amount: number;
   address: string;
   privateKey: string;
+}
+
+export interface ImportAddressFromMnemonic {
+  mnemonic: string;
+  index: number;
 }

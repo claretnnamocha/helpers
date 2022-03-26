@@ -1,5 +1,3 @@
-import { ECPairInterface } from "ecpair";
-
 export interface GetBalance {
   testnet?: boolean;
   address: string;
@@ -32,7 +30,6 @@ export interface Wallet {
   wif: string;
   address: string;
   privateKey: string;
-  keyPair: ECPairInterface;
 }
 
 export interface Send {
@@ -58,4 +55,10 @@ export interface UTXO {
 
 export interface TrySend extends Send {
   fee?: number;
+}
+
+export interface ImportAddressFromMnemonic {
+  mnemonic: string;
+  index: number;
+  testnet?: boolean;
 }
