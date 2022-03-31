@@ -25,7 +25,7 @@ export interface Amount {
   ethers: number;
 }
 
-export interface EthWallet {
+export interface Wallet {
   address: string;
   privateKey: string;
 }
@@ -40,4 +40,13 @@ export interface SendEth {
 export interface ImportAddressFromMnemonic {
   mnemonic: string;
   index: number;
+}
+
+export interface ImportAddressFromXPrv{
+  xprv: string;
+  index: number;
+}
+
+export interface MnemonicOnly {
+  mnemonic: string;
 }

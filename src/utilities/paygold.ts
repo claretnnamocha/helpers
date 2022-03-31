@@ -1,7 +1,6 @@
 import _ from "lodash";
 import fetch from "node-fetch";
 
-
 const { PAYGOLD_USERNAME, PAYGOLD_PASSWORD } = process.env;
 
 const billerProducts = [
@@ -13,6 +12,8 @@ const billerProducts = [
     network: "mtn",
     billerId: "mtn-data",
     group: "data-bundle",
+    hasProducts: true,
+    hasValidation: false,
   },
   {
     name: "MTN Data 2GB (SME)",
@@ -22,6 +23,8 @@ const billerProducts = [
     network: "mtn",
     billerId: "mtn-data",
     group: "data-bundle",
+    hasProducts: true,
+    hasValidation: false,
   },
   {
     name: "MTN Data 3GB (SME)",
@@ -31,6 +34,8 @@ const billerProducts = [
     network: "mtn",
     billerId: "mtn-data",
     group: "data-bundle",
+    hasProducts: true,
+    hasValidation: false,
   },
   {
     name: "MTN Data 5GB (SME)",
@@ -40,6 +45,8 @@ const billerProducts = [
     network: "mtn",
     billerId: "mtn-data",
     group: "data-bundle",
+    hasProducts: true,
+    hasValidation: false,
   },
   {
     name: "MTN Data 8GB (Direct)",
@@ -49,6 +56,8 @@ const billerProducts = [
     network: "mtn",
     billerId: "mtn-data",
     group: "data-bundle",
+    hasProducts: true,
+    hasValidation: false,
   },
   {
     name: "MTN Data 15GB (Direct)",
@@ -58,6 +67,8 @@ const billerProducts = [
     network: "mtn",
     billerId: "mtn-data",
     group: "data-bundle",
+    hasProducts: true,
+    hasValidation: false,
   },
   {
     name: "Glo Data 1GB",
@@ -67,6 +78,8 @@ const billerProducts = [
     network: "glo",
     billerId: "glo-data",
     group: "data-bundle",
+    hasProducts: true,
+    hasValidation: false,
   },
   {
     name: "Glo Data 2GB/2.5GB",
@@ -76,6 +89,8 @@ const billerProducts = [
     network: "glo",
     billerId: "glo-data",
     group: "data-bundle",
+    hasProducts: true,
+    hasValidation: false,
   },
   {
     name: "Glo Data 5.8GB",
@@ -85,6 +100,8 @@ const billerProducts = [
     network: "glo",
     billerId: "glo-data",
     group: "data-bundle",
+    hasProducts: true,
+    hasValidation: false,
   },
   {
     name: "Glo Data 7.7GB",
@@ -94,6 +111,8 @@ const billerProducts = [
     network: "glo",
     billerId: "glo-data",
     group: "data-bundle",
+    hasProducts: true,
+    hasValidation: false,
   },
   {
     name: "Glo Data 10GB",
@@ -103,6 +122,8 @@ const billerProducts = [
     network: "glo",
     billerId: "glo-data",
     group: "data-bundle",
+    hasProducts: true,
+    hasValidation: false,
   },
   {
     name: "Glo Data 13.25GB",
@@ -112,6 +133,8 @@ const billerProducts = [
     network: "glo",
     billerId: "glo-data",
     group: "data-bundle",
+    hasProducts: true,
+    hasValidation: false,
   },
   {
     name: "Glo Data 18.25GB",
@@ -121,6 +144,8 @@ const billerProducts = [
     network: "glo",
     billerId: "glo-data",
     group: "data-bundle",
+    hasProducts: true,
+    hasValidation: false,
   },
   {
     name: "Glo Data 20GB/25GB",
@@ -130,6 +155,8 @@ const billerProducts = [
     network: "glo",
     billerId: "glo-data",
     group: "data-bundle",
+    hasProducts: true,
+    hasValidation: false,
   },
   {
     name: "Airtel Data 1.5GB",
@@ -139,6 +166,8 @@ const billerProducts = [
     network: "airtel",
     billerId: "airtel-data",
     group: "data-bundle",
+    hasProducts: true,
+    hasValidation: false,
   },
   {
     name: "Airtel Data 2GB",
@@ -148,6 +177,8 @@ const billerProducts = [
     network: "airtel",
     billerId: "airtel-data",
     group: "data-bundle",
+    hasProducts: true,
+    hasValidation: false,
   },
   {
     name: "Airtel Data 3GB",
@@ -157,6 +188,8 @@ const billerProducts = [
     network: "airtel",
     billerId: "airtel-data",
     group: "data-bundle",
+    hasProducts: true,
+    hasValidation: false,
   },
   {
     name: "Airtel Data 4.5GB",
@@ -166,6 +199,8 @@ const billerProducts = [
     network: "airtel",
     billerId: "airtel-data",
     group: "data-bundle",
+    hasProducts: true,
+    hasValidation: false,
   },
   {
     name: "Airtel Data 6GB",
@@ -175,6 +210,8 @@ const billerProducts = [
     network: "airtel",
     billerId: "airtel-data",
     group: "data-bundle",
+    hasProducts: true,
+    hasValidation: false,
   },
   {
     name: "Airtel Data 8GB",
@@ -184,6 +221,8 @@ const billerProducts = [
     network: "airtel",
     billerId: "airtel-data",
     group: "data-bundle",
+    hasProducts: true,
+    hasValidation: false,
   },
   {
     name: "Airtel Data 15GB",
@@ -193,6 +232,8 @@ const billerProducts = [
     network: "airtel",
     billerId: "airtel-data",
     group: "data-bundle",
+    hasProducts: true,
+    hasValidation: false,
   },
   {
     name: "Airtel Data 40GB",
@@ -202,6 +243,8 @@ const billerProducts = [
     network: "airte0",
     billerId: "airtel-data",
     group: "data-bundle",
+    hasProducts: true,
+    hasValidation: false,
   },
   {
     name: "9mobile Data 1.5GB",
@@ -210,6 +253,9 @@ const billerProducts = [
     code: "9MOB1000",
     network: "9mobile",
     billerId: "9mobile-data",
+    group: "data-bundle",
+    hasProducts: true,
+    hasValidation: false,
   },
   {
     name: "9mobile Data 2GB",
@@ -218,6 +264,9 @@ const billerProducts = [
     code: "9MOB2000",
     network: "9mobile",
     billerId: "9mobile-data",
+    group: "data-bundle",
+    hasProducts: true,
+    hasValidation: false,
   },
   {
     name: "9mobile Data 3GB",
@@ -226,6 +275,9 @@ const billerProducts = [
     code: "9MOB3000",
     network: "9mobile",
     billerId: "9mobile-data",
+    group: "data-bundle",
+    hasProducts: true,
+    hasValidation: false,
   },
   {
     name: "9mobile Data 4.5GB",
@@ -234,6 +286,9 @@ const billerProducts = [
     code: "9MOB34500",
     network: "9mobile",
     billerId: "9mobile-data",
+    group: "data-bundle",
+    hasProducts: true,
+    hasValidation: false,
   },
   {
     name: "9mobile Data 11GB",
@@ -242,6 +297,9 @@ const billerProducts = [
     code: "9MOB4000",
     network: "9mobile",
     billerId: "9mobile-data",
+    group: "data-bundle",
+    hasProducts: true,
+    hasValidation: false,
   },
   {
     name: "9mobile Data 15GB",
@@ -250,6 +308,9 @@ const billerProducts = [
     code: "9MOB5000",
     network: "9mobile",
     billerId: "9mobile-data",
+    group: "data-bundle",
+    hasProducts: true,
+    hasValidation: false,
   },
   {
     name: "9mobile Data 40GB",
@@ -258,114 +319,153 @@ const billerProducts = [
     code: "9MOB40000",
     network: "9mobile",
     billerId: "9mobile-data",
+    group: "data-bundle",
+    hasProducts: true,
+    hasValidation: false,
   },
   {
     name: "DStv Great Wall",
     billerId: "dstv",
     code: "dstv-greatwall",
     group: "cable-tv",
+    hasProducts: true,
+    hasValidation: true,
   },
   {
     name: "DStv Padi",
     billerId: "dstv",
     code: "dstv-padi",
     group: "cable-tv",
+    hasProducts: true,
+    hasValidation: true,
   },
   {
     name: "DStv Yanga",
     billerId: "dstv",
     code: "dstv-yanga",
     group: "cable-tv",
+    hasProducts: true,
+    hasValidation: true,
   },
   {
     name: "DStv Confam",
     billerId: "dstv",
     code: "dstv-confam",
     group: "cable-tv",
+    hasProducts: true,
+    hasValidation: true,
   },
   {
     name: "DStv Asian",
     billerId: "dstv",
     code: "dstv6",
     group: "cable-tv",
+    hasProducts: true,
+    hasValidation: true,
   },
   {
     name: "DStv Compact",
     billerId: "dstv",
     code: "dstv79",
     group: "cable-tv",
+    hasProducts: true,
+    hasValidation: true,
   },
   {
     name: "DStv Compact Plus",
     billerId: "dstv",
     code: "dstv7",
     group: "cable-tv",
+    hasProducts: true,
+    hasValidation: true,
   },
   {
     name: "DStv Premium",
     billerId: "dstv",
     code: "dstv3",
     group: "cable-tv",
+    hasProducts: true,
+    hasValidation: true,
   },
   {
     name: "DStv Premium Asia",
     billerId: "dstv",
     code: "dstv10",
     group: "cable-tv",
+    hasProducts: true,
+    hasValidation: true,
   },
   {
     name: "GOtv Lite",
     billerId: "gotv",
     code: "gotv-lite",
     group: "cable-tv",
+    hasProducts: true,
+    hasValidation: true,
   },
   {
     name: "GOtv Jinja",
     billerId: "gotv",
     code: "gotv-jinja",
     group: "cable-tv",
+    hasProducts: true,
+    hasValidation: true,
   },
   {
     name: "GOtv Jolli",
     billerId: "gotv",
     code: "gotv-jolli",
     group: "cable-tv",
+    hasProducts: true,
+    hasValidation: true,
   },
   {
     name: "GOtv Max",
     billerId: "gotv",
     code: "gotv-max",
     group: "cable-tv",
+    hasProducts: true,
+    hasValidation: true,
   },
   {
     name: "Startimes Nova",
     billerId: "startimes",
     code: "nova",
     group: "cable-tv",
+    hasProducts: true,
+    hasValidation: true,
   },
   {
     name: "Startimes Basic",
     billerId: "startimes",
     code: "basic",
     group: "cable-tv",
+    hasProducts: true,
+    hasValidation: true,
   },
   {
     name: "Startimes Smart",
     billerId: "startimes",
     code: "smart",
     group: "cable-tv",
+    hasProducts: true,
+    hasValidation: true,
   },
   {
     name: "Startimes Classic",
     billerId: "startimes",
     code: "classic",
     group: "cable-tv",
+    hasProducts: true,
+    hasValidation: true,
   },
   {
     name: "Startimes Super",
     billerId: "startimes",
     code: "super",
     group: "cable-tv",
+    hasProducts: true,
+    hasValidation: true,
   },
 ];
 
@@ -374,41 +474,57 @@ export const electricityBillers = [
     billerId: "abuja-electric",
     group: "electricity",
     name: "Abuja Electricity Distribution Company (AEDC)",
+    hasProducts: false,
+    hasValidation: true,
   },
   {
     billerId: "eko-electric",
     group: "electricity",
     name: "Eko Electricity Distribution Company (EKEDC)",
+    hasProducts: false,
+    hasValidation: true,
   },
   {
     billerId: "ibadan-electric",
     group: "electricity",
     name: "Ibadan Electricity Distribution Company (IBEDC)",
+    hasProducts: false,
+    hasValidation: true,
   },
   {
     billerId: "ikeja-electric",
     group: "electricity",
     name: "Ikeja Electricity Distribution Company (IKEDC)",
+    hasProducts: false,
+    hasValidation: true,
   },
   {
     billerId: "jos-electric",
     group: "electricity",
     name: "Jos Electricity Distribution PLC (JEDplc)",
+    hasProducts: false,
+    hasValidation: true,
   },
   {
     billerId: "kaduna-electric",
     group: "electricity",
     name: "Kaduna Electricity Distribution Company (KAEDCO)",
+    hasProducts: false,
+    hasValidation: true,
   },
   {
     billerId: "kano-electric",
     group: "electricity",
     name: "Kano Electricity Distribution Company (KEDCO)",
+    hasProducts: false,
+    hasValidation: true,
   },
   {
     billerId: "portharcourt-electric",
     group: "electricity",
     name: "Port Harcourt Electricity Distribution Company (PHED)",
+    hasProducts: false,
+    hasValidation: true,
   },
 ];
 
@@ -429,7 +545,7 @@ const request = async ({ url, body = {} }) => {
   } catch (error) {
     return {
       status: false,
-      message: "An error occured calling paygold"
+      message: "An error occured calling paygold",
     };
   }
 };
@@ -461,10 +577,34 @@ export const getBillersInCategory = ({ id }) => {
       return electricityBillers;
     case "airtime":
       return [
-        { group: "airtime", name: "MTN", billerId: "mtn" },
-        { group: "airtime", name: "Glo", billerId: "glo" },
-        { group: "airtime", name: "9Mobile", billerId: "9mobile" },
-        { group: "airtime", name: "Airtel", billerId: "airtel" },
+        {
+          group: "airtime",
+          name: "MTN",
+          billerId: "mtn",
+          hasProducts: false,
+          hasValidation: false,
+        },
+        {
+          group: "airtime",
+          name: "Glo",
+          billerId: "glo",
+          hasProducts: false,
+          hasValidation: false,
+        },
+        {
+          group: "airtime",
+          name: "9Mobile",
+          billerId: "9mobile",
+          hasProducts: false,
+          hasValidation: false,
+        },
+        {
+          group: "airtime",
+          name: "Airtel",
+          billerId: "airtel",
+          hasProducts: false,
+          hasValidation: false,
+        },
       ];
     default:
       return _.uniqBy(
@@ -475,8 +615,13 @@ export const getBillersInCategory = ({ id }) => {
           )
         )
           .flat(1)
-          .map(({ billerId, network }: any) => {
-            return { billerId, name: network || billerId };
+          .map(({ billerId, network, hasProducts, hasValidation }: any) => {
+            return {
+              billerId,
+              name: network || billerId,
+              hasProducts,
+              hasValidation,
+            };
           }),
         (g) => g.billerId
       );
@@ -495,11 +640,12 @@ export const verifyCustomer = async ({
   customerId: customer_id,
   serviceId: service_id,
   variationId: variation_id = null,
-}) =>
-  await request({
+}) => {
+  return await request({
     url: "verify-customer",
     body: { customer_id, service_id, variation_id },
   });
+};
 
 export const payBill = async ({
   customerId: customer_id,

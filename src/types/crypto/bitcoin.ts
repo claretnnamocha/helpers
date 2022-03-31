@@ -32,11 +32,24 @@ export interface Wallet {
   privateKey: string;
 }
 
-export interface Send {
+export interface EstimateFeeWithHD {
+  xpub: string;
+  index: number;
+  xprv: string;
   testnet?: boolean;
-  amount: number;
-  address: string;
+  amounts: Array<number>;
+  addresses: Array<string>;
+}
+
+export interface EstimateFee {
+  testnet?: boolean;
+  amounts: Array<number>;
+  addresses: Array<string>;
   wif: string;
+}
+
+export interface Send extends EstimateFee {
+  fee?: number;
 }
 
 interface UTXOStatus {
@@ -53,12 +66,34 @@ export interface UTXO {
   status?: UTXOStatus;
 }
 
-export interface TrySend extends Send {
+export interface Send extends EstimateFee {
+  fee?: number;
+}
+
+export interface SendWithHD extends EstimateFeeWithHD {
   fee?: number;
 }
 
 export interface ImportAddressFromMnemonic {
   mnemonic: string;
+  index: number;
+  testnet?: boolean;
+}
+
+export interface MnemonicOnly {
+  mnemonic: string;
+}
+
+export interface AddressOnly {
+  address: string;
+}
+
+export interface EntropyOnly {
+  entropy: string;
+}
+
+export interface CreateAddressFromXPub {
+  xpub: string;
   index: number;
   testnet?: boolean;
 }

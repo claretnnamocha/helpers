@@ -3,13 +3,7 @@ import { generateReciepient2 } from ".";
 import { mail } from "../types";
 import FormData = require("form-data");
 
-const {
-  MAILGUN_API_KEY,
-  MAILGUN_DOMAIN,
-  MAILGUN_USERNAME,
-  EMAIL_FROM,
-  EMAIL_NAME,
-} = process.env;
+const { MAILGUN_API_KEY, MAILGUN_DOMAIN, EMAIL_FROM, EMAIL_NAME } = process.env;
 
 export const send = async ({
   to,
