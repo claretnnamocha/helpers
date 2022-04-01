@@ -1,19 +1,30 @@
+type network =
+  | 'mainnet'
+  | 'ropsten'
+  | 'kovan'
+  | 'rinkeby'
+  | 'goerli'
+  | 'palm-mainnet'
+  | 'palm-testnet'
+  | 'polygon-mainnet'
+  | 'polygon-mumbai';
+
 export interface GetBalance {
-  testnet?: boolean;
+  network?: network;
   address: string;
 }
 
 export interface GetTrxnHash {
-  testnet?: boolean;
+  network?: network;
   trxid: string;
 }
 
 export interface ImportAddress {
   privateKey: string;
-  testnet?: boolean;
+  network?: network;
 }
 export interface Network {
-  testnet?: boolean;
+  network?: network;
 }
 
 export interface Transaction {
@@ -31,7 +42,7 @@ export interface Wallet {
 }
 
 export interface SendEth {
-  testnet?: boolean;
+  network?: network;
   amount: number;
   address: string;
   privateKey: string;
@@ -42,7 +53,7 @@ export interface ImportAddressFromMnemonic {
   index: number;
 }
 
-export interface ImportAddressFromXPrv{
+export interface ImportAddressFromXPrv {
   xprv: string;
   index: number;
 }

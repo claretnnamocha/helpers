@@ -13,22 +13,20 @@ import {
   SendEth,
 } from '../types/crypto/ethereum';
 
-const getEthRpcLink = ({testnet = false}: Network): string => {
+const getEthRpcLink = ({network = 'mainnet'}: Network): string => {
   const {INFURA_API_KEY} = process.env;
 
   if (!INFURA_API_KEY) throw new Error('Please provide INFURA_API_KEY');
-  return testnet ?
-    `https://rinkeby.infura.io/v3/${INFURA_API_KEY}` :
-    `https://mainnet.infura.io/v3/${INFURA_API_KEY}`;
+  return `https://${network}.infura.io/v3/${INFURA_API_KEY}`;
 };
 
-const getProvider = ({testnet = false}: Network): JsonRpcProvider => {
-  const link: string = getEthRpcLink({testnet});
+const getProvider = ({network = 'mainnet'}: Network): JsonRpcProvider => {
+  const link: string = getEthRpcLink({network});
   return new JsonRpcProvider(link);
 };
 
-export const createEthAddress = ({testnet = false}: Network): Wallet => {
-  const provider = getProvider({testnet});
+export const createEthAddress = ({network = 'mainnet'}: Network): Wallet => {
+  const provider = getProvider({network});
   const {address, privateKey} = ethers.Wallet.createRandom({
     JsonRpcProvider: provider,
   });
@@ -37,9 +35,9 @@ export const createEthAddress = ({testnet = false}: Network): Wallet => {
 
 export const importEthAddress = ({
   privateKey,
-  testnet = false,
+  network = 'mainnet',
 }: ImportAddress): Wallet => {
-  const provider = getProvider({testnet});
+  const provider = getProvider({network});
   const {address} = new ethers.Wallet(privateKey, provider);
 
   return {address, privateKey};
@@ -48,14 +46,14 @@ export const importEthAddress = ({
 export const estimateEthGasFee = async ({
   address,
   amount,
-  testnet = false,
+  network = 'mainnet',
   privateKey,
 }: SendEth): Promise<Amount> => {
   const to = Web3.utils.toChecksumAddress(address);
   const ether: any = ethers.utils.parseEther(amount.toString());
-  const provider: JsonRpcProvider = getProvider({testnet});
+  const provider: JsonRpcProvider = getProvider({network});
   const {address: sender}: Wallet = importEthAddress({
-    testnet,
+    network,
     privateKey,
   });
 
@@ -75,15 +73,15 @@ export const estimateEthGasFee = async ({
 export const sendEth = async ({
   address,
   amount,
-  testnet = false,
+  network = 'mainnet',
   privateKey,
 }: SendEth): Promise<TransactionReceipt> => {
   const to = Web3.utils.toChecksumAddress(address);
   const eths: ethers.BigNumber = ethers.utils.parseEther(amount.toString());
 
-  const provider: JsonRpcProvider = getProvider({testnet});
+  const provider: JsonRpcProvider = getProvider({network});
   const {address: sender}: Wallet = importEthAddress({
-    testnet,
+    network,
     privateKey,
   });
 
@@ -103,9 +101,9 @@ export const sendEth = async ({
 
 export const getEthBalance = async ({
   address,
-  testnet = false,
+  network = 'mainnet',
 }: GetBalance): Promise<Amount> => {
-  const provider: JsonRpcProvider = getProvider({testnet});
+  const provider: JsonRpcProvider = getProvider({network});
   const balance = await provider.getBalance(address);
 
   const wei = balance.toNumber();
