@@ -1,22 +1,22 @@
-import nodemailer from "nodemailer";
-import { generateReciepient2 } from ".";
-import { mail } from "../types";
+import nodemailer from 'nodemailer';
+import {generateReciepient2} from '.';
+import {mail} from '../types';
 
-const { EMAIL_FROM, EMAIL_NAME } = process.env;
+const {EMAIL_FROM, EMAIL_NAME} = process.env;
 
 export const send = async ({
   to,
   subject,
-  text = "",
-  html = "",
+  text = '',
+  html = '',
   from = EMAIL_FROM,
   fromName = EMAIL_NAME,
 }: mail.send) => {
   try {
-    let testAccount = await nodemailer.createTestAccount();
+    const testAccount = await nodemailer.createTestAccount();
 
-    let transporter = nodemailer.createTransport({
-      host: "smtp.ethereal.email",
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.ethereal.email',
       port: 587,
       secure: true,
       auth: {
@@ -27,7 +27,7 @@ export const send = async ({
 
     from = `${fromName} <${from}>`;
 
-    let info = await transporter.sendMail({
+    const info = await transporter.sendMail({
       from,
       to: generateReciepient2(to),
       subject,

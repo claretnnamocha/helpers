@@ -1,19 +1,19 @@
-import crypto from "crypto";
-import fetch from "node-fetch";
-import { payments } from "../types";
+import crypto from 'crypto';
+import fetch from 'node-fetch';
+import {payments} from '../types';
 
-const { PAYSTACK_SECRET_KEY } = process.env;
+const {PAYSTACK_SECRET_KEY} = process.env;
 
-const baseURL = "https://api.paystack.co";
+const baseURL = 'https://api.paystack.co';
 
-const request = async ({ url, body = {}, method = "get" }) => {
+const request = async ({url, body = {}, method = 'get'}) => {
   try {
     let response: any = await fetch(`${baseURL}/${url}`, {
       body: Object.keys(body).length ? JSON.stringify(body) : null,
       method,
       headers: {
-        authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
-        "content-type": "application/json",
+        'authorization': `Bearer ${PAYSTACK_SECRET_KEY}`,
+        'content-type': 'application/json',
       },
     });
 
@@ -23,13 +23,13 @@ const request = async ({ url, body = {}, method = "get" }) => {
   } catch (error) {
     return {
       status: false,
-      message: "An error occured calling paystack",
+      message: 'An error occured calling paystack',
     };
   }
 };
 
 export const getBanks = async () =>
-  await request({ url: "bank?country=nigeria&use_cursor=false" });
+  await request({url: 'bank?country=nigeria&use_cursor=false'});
 
 export const resolveBank = async ({
   account_number,
@@ -53,42 +53,42 @@ export const transfer = async ({
   } = await request({
     url: `transferrecipient`,
     body: {
-      type: "nuban",
+      type: 'nuban',
       name,
       account_number,
       bank_code,
-      currency: "NGN",
+      currency: 'NGN',
     },
-    method: "post",
+    method: 'post',
   });
-  if (!trs) return { status: trs, message: trm };
+  if (!trs) return {status: trs, message: trm};
 
-  const { recipient_code: recipient } = trd;
+  const {recipient_code: recipient} = trd;
   amount = amount * 1000;
 
-  const { status, message, data } = await request({
+  const {status, message, data} = await request({
     url: `transfer`,
     body: {
-      source: "balance",
+      source: 'balance',
       reason,
       amount,
       recipient,
     },
-    method: "post",
+    method: 'post',
   });
 
-  return { status, message, data };
+  return {status, message, data};
 };
 
 export const handleWebhook = (params: payments.webhook) => {
-  const { headers, body } = params;
+  const {headers, body} = params;
 
   const hash = crypto
-    .createHmac("sha512", PAYSTACK_SECRET_KEY)
-    .update(JSON.stringify(body))
-    .digest("hex");
+      .createHmac('sha512', PAYSTACK_SECRET_KEY)
+      .update(JSON.stringify(body))
+      .digest('hex');
 
-  if (hash !== headers["x-paystack-signature"]) {
+  if (hash !== headers['x-paystack-signature']) {
     return false;
   }
 
@@ -97,8 +97,8 @@ export const handleWebhook = (params: payments.webhook) => {
   return payload;
 };
 
-export const resolveCardBin = async ({ bin }: payments.resolveCardBin) =>
+export const resolveCardBin = async ({bin}: payments.resolveCardBin) =>
   await request({
     url: `decision/bin/${bin}`,
-    method: "get",
+    method: 'get',
   });

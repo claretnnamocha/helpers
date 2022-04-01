@@ -1,4 +1,4 @@
-const EARTH_RADIUS: number = 6371e3; //meters
+const EARTH_RADIUS: number = 6371e3; // meters
 
 /**
  * @param {Array} start Expected [lon, lat]
@@ -6,13 +6,13 @@ const EARTH_RADIUS: number = 6371e3; //meters
  * @return {number} Distance in meters.
  */
 export const calculateDistance = (
-  start: Array<number>,
-  end: Array<number>
+    start: Array<number>,
+    end: Array<number>,
 ): number => {
-  const lat1 = start[1],
-    lon1 = start[0],
-    lat2 = end[1],
-    lon2 = end[0];
+  const lat1 = start[1];
+  const lon1 = start[0];
+  const lat2 = end[1];
+  const lon2 = end[0];
 
   return sphericalCosinus(lat1, lon1, lat2, lon2);
 };
@@ -25,16 +25,16 @@ export const calculateDistance = (
  * @return {number} Distance in meters.
  */
 const sphericalCosinus = (
-  lat1: number,
-  lon1: number,
-  lat2: number,
-  lon2: number
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number,
 ): number => {
-  let dLon = toRad(lon2 - lon1),
-    distance =
+  const dLon = toRad(lon2 - lon1);
+  const distance =
       Math.acos(
-        Math.sin(lat1) * Math.sin(lat2) +
-          Math.cos(lat1) * Math.cos(lat2) * Math.cos(dLon)
+          Math.sin(lat1) * Math.sin(lat2) +
+          Math.cos(lat1) * Math.cos(lat2) * Math.cos(dLon),
       ) * EARTH_RADIUS;
 
   lat1 = toRad(lat1);
@@ -53,9 +53,9 @@ const sphericalCosinus = (
  * @return {Array} Lon-lat coordinates.
  */
 export const coordMetersAway = (
-  coord: Array<number>,
-  bearing: number,
-  distance: number
+    coord: Array<number>,
+    bearing: number,
+    distance: number,
 ): Array<number> => {
   /**
    * φ is latitude, λ is longitude,
@@ -69,14 +69,14 @@ export const coordMetersAway = (
   const λ1 = toRad(coord[0]);
 
   const φ2 = Math.asin(
-    Math.sin(φ1) * Math.cos(δ) + Math.cos(φ1) * Math.sin(δ) * Math.cos(θ)
+      Math.sin(φ1) * Math.cos(δ) + Math.cos(φ1) * Math.sin(δ) * Math.cos(θ),
   );
 
   let λ2 =
     λ1 +
     Math.atan2(
-      Math.sin(θ) * Math.sin(δ) * Math.cos(φ1),
-      Math.cos(δ) - Math.sin(φ1) * Math.sin(φ2)
+        Math.sin(θ) * Math.sin(δ) * Math.cos(φ1),
+        Math.cos(δ) - Math.sin(φ1) * Math.sin(φ2),
     );
   // normalise to -180..+180°
   λ2 = ((λ2 + 3 * Math.PI) % (2 * Math.PI)) - Math.PI;
@@ -90,18 +90,18 @@ export const coordMetersAway = (
  * @return {number} Bearing in degrees.
  */
 export const getBearing = (
-  start: Array<number>,
-  end: Array<number>
+    start: Array<number>,
+    end: Array<number>,
 ): number => {
-  let startLat = toRad(start[1]),
-    startLong = toRad(start[0]),
-    endLat = toRad(end[1]),
-    endLong = toRad(end[0]),
-    dLong = endLong - startLong;
+  const startLat = toRad(start[1]);
+  const startLong = toRad(start[0]);
+  const endLat = toRad(end[1]);
+  const endLong = toRad(end[0]);
+  let dLong = endLong - startLong;
 
   const dPhi = Math.log(
-    Math.tan(endLat / 2.0 + Math.PI / 4.0) /
-      Math.tan(startLat / 2.0 + Math.PI / 4.0)
+      Math.tan(endLat / 2.0 + Math.PI / 4.0) /
+      Math.tan(startLat / 2.0 + Math.PI / 4.0),
   );
 
   if (Math.abs(dLong) > Math.PI) {

@@ -1,6 +1,6 @@
-import fetch from "node-fetch";
-import { generateReciepient } from ".";
-import { sms } from "../types";
+import fetch from 'node-fetch';
+import {generateReciepient} from '.';
+import {sms} from '../types';
 
 const {
   AFRICASTALKING_APIKEY: apiKey,
@@ -16,29 +16,31 @@ export const send = async ({
 }: sms.send) => {
   try {
     to = generateReciepient(to);
-    const details = { username, message, from, to };
+    const details = {username, message, from, to};
 
     let body: string | Array<string> = [];
-    for (var property in details) {
-      var encodedKey = encodeURIComponent(property);
-      var encodedValue = encodeURIComponent(details[property]);
-      body.push(encodedKey + "=" + encodedValue);
+    for (const property in details) {
+      if (details.hasOwnProperty(property)) {
+        const encodedKey = encodeURIComponent(property);
+        const encodedValue = encodeURIComponent(details[property]);
+        body.push(encodedKey + '=' + encodedValue);
+      }
     }
-    body = body.join("&");
+    body = body.join('&');
 
     const response = await fetch(
-      AFRICASTALKING_SANDBOX
-        ? "https://api.sandbox.africastalking.com/version1/messaging"
-        : `https://api.africastalking.com/version1/messaging`,
+      AFRICASTALKING_SANDBOX ?
+        'https://api.sandbox.africastalking.com/version1/messaging' :
+        `https://api.africastalking.com/version1/messaging`,
       {
-        method: "post",
+        method: 'post',
         body,
         headers: {
-          "content-type": "application/x-www-form-urlencoded",
-          accept: "application/json",
+          'content-type': 'application/x-www-form-urlencoded',
+          'accept': 'application/json',
           apiKey,
         },
-      }
+      },
     );
 
     const r = await response.json();

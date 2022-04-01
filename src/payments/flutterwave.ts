@@ -1,36 +1,36 @@
-import fetch from "node-fetch";
-import { v4 as uuid } from "uuid";
-import { payments } from "../types";
+import fetch from 'node-fetch';
+import {v4 as uuid} from 'uuid';
+import {payments} from '../types';
 
-const { FLUTTERWAVE_SECRET_KEY, FLUTTERWAVE_HASH } = process.env;
+const {FLUTTERWAVE_SECRET_KEY, FLUTTERWAVE_HASH} = process.env;
 
-const baseURL = "https://api.flutterwave.com/v3";
+const baseURL = 'https://api.flutterwave.com/v3';
 
-const request = async ({ url, body = {}, method = "get" }) => {
+const request = async ({url, body = {}, method = 'get'}) => {
   try {
     let response: any = await fetch(`${baseURL}/${url}`, {
       body: Object.keys(body).length ? JSON.stringify(body) : null,
       method,
       headers: {
-        authorization: `Bearer ${FLUTTERWAVE_SECRET_KEY}`,
-        "content-type": "application/json",
+        'authorization': `Bearer ${FLUTTERWAVE_SECRET_KEY}`,
+        'content-type': 'application/json',
       },
     });
 
     response = await response.json();
-    response.status = response.status === "success";
+    response.status = response.status === 'success';
 
     return response;
   } catch (error) {
     return {
       status: false,
-      message: "An error occured calling flutterwave",
+      message: 'An error occured calling flutterwave',
     };
   }
 };
 
 export const getBanks = async () => {
-  let response = await request({ url: "banks/NG" });
+  const response = await request({url: 'banks/NG'});
   return response;
 };
 
@@ -40,8 +40,8 @@ export const resolveBank = async ({
 }: payments.resolveBank) =>
   await request({
     url: `accounts/resolve`,
-    body: { account_number, account_bank },
-    method: "post",
+    body: {account_number, account_bank},
+    method: 'post',
   });
 
 export const transfer = async ({
@@ -50,27 +50,27 @@ export const transfer = async ({
   amount,
   reason: narration,
 }: payments.transfer) => {
-  let response = await request({
+  const response = await request({
     url: `transfers`,
     body: {
       account_bank,
       account_number,
       amount,
       narration,
-      currency: "NGN",
+      currency: 'NGN',
       reference: uuid(),
-      debit_currency: "NGN",
+      debit_currency: 'NGN',
     },
-    method: "post",
+    method: 'post',
   });
 
   return response;
 };
 
 export const handleWebhook = (params: payments.webhook) => {
-  const { headers, body } = params;
+  const {headers, body} = params;
 
-  if (headers["verif-hash"] !== FLUTTERWAVE_HASH) {
+  if (headers['verif-hash'] !== FLUTTERWAVE_HASH) {
     return false;
   }
 
@@ -79,14 +79,14 @@ export const handleWebhook = (params: payments.webhook) => {
   return payload;
 };
 
-export const resolveBVN = async ({ bvn }: payments.resolveBVN) =>
+export const resolveBVN = async ({bvn}: payments.resolveBVN) =>
   await request({
     url: `kyc/bvns/${bvn}`,
-    method: "get",
+    method: 'get',
   });
 
-export const resolveCardBin = async ({ bin }: payments.resolveCardBin) =>
+export const resolveCardBin = async ({bin}: payments.resolveCardBin) =>
   await request({
     url: `card-bins/${bin}`,
-    method: "get",
+    method: 'get',
   });

@@ -1,7 +1,7 @@
-import { jobs } from "../types";
+import {jobs} from '../types';
 
 export const process = async ({
-  queueName = "_default_",
+  queueName = '_default_',
   concurrency = 1,
   queue,
   callback,

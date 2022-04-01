@@ -1,33 +1,33 @@
-import fetch from "node-fetch";
-import { generateReciepient } from ".";
-import { mail } from "../types";
+import fetch from 'node-fetch';
+import {generateReciepient} from '.';
+import {mail} from '../types';
 
-const { SENDGRID_API_KEY, EMAIL_FROM, EMAIL_NAME } = process.env;
+const {SENDGRID_API_KEY, EMAIL_FROM, EMAIL_NAME} = process.env;
 
 export const send = async ({
   to,
   subject,
-  text = "",
-  html = "",
+  text = '',
+  html = '',
   from = EMAIL_FROM,
   fromName = EMAIL_NAME,
 }: mail.send) => {
   try {
     const body = {
-      personalizations: [{ to: generateReciepient(to) }],
-      from: { email: from, name: fromName },
+      personalizations: [{to: generateReciepient(to)}],
+      from: {email: from, name: fromName},
       subject,
       content: [
-        { type: "text/html", value: html },
-        { type: "text/plain", value: text },
+        {type: 'text/html', value: html},
+        {type: 'text/plain', value: text},
       ],
     };
 
-    const response = await fetch("https://api.sendgrid.com/v3/mail/send", {
-      method: "post",
+    const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
+      method: 'post',
       headers: {
-        authorization: `Bearer ${SENDGRID_API_KEY}`,
-        "content-type": "application/json",
+        'authorization': `Bearer ${SENDGRID_API_KEY}`,
+        'content-type': 'application/json',
       },
       body: JSON.stringify(body),
     });

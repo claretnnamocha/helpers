@@ -1,31 +1,31 @@
-import { generateReciepient } from ".";
-import { mail } from "../types";
+import {generateReciepient} from '.';
+import {mail} from '../types';
 
-const { SENDINBLUE_API_KEY, EMAIL_FROM, EMAIL_NAME } = process.env;
+const {SENDINBLUE_API_KEY, EMAIL_FROM, EMAIL_NAME} = process.env;
 
 export const send = async ({
   to,
   subject,
-  text = "",
-  html = "",
+  text = '',
+  html = '',
   from = EMAIL_FROM,
   fromName = EMAIL_NAME,
 }: mail.send) => {
   try {
     const body = {
-      sender: { name: fromName, email: from },
+      sender: {name: fromName, email: from},
       to: generateReciepient(to),
       subject,
       htmlContent: html,
       textContent: text,
     };
 
-    const response = await fetch("https://api.sendinblue.com/v3/smtp/email", {
-      method: "post",
+    const response = await fetch('https://api.sendinblue.com/v3/smtp/email', {
+      method: 'post',
       headers: {
-        "api-key": SENDINBLUE_API_KEY,
-        "content-type": "application/json",
-        accept: "application/json",
+        'api-key': SENDINBLUE_API_KEY,
+        'content-type': 'application/json',
+        'accept': 'application/json',
       },
       body: JSON.stringify(body),
     });

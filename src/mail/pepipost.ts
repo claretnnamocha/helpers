@@ -1,7 +1,7 @@
-import fetch from "node-fetch";
-import { mail } from "../types";
+import fetch from 'node-fetch';
+import {mail} from '../types';
 
-const { NETCORE_API, EMAIL_FROM, EMAIL_NAME } = process.env;
+const {NETCORE_API, EMAIL_FROM, EMAIL_NAME} = process.env;
 
 export const send = async ({
   to,
@@ -13,19 +13,19 @@ export const send = async ({
 }: mail.send) => {
   try {
     const options = {
-      method: "POST",
-      headers: { api_key: NETCORE_API, "content-type": "application/json" },
+      method: 'POST',
+      headers: {'api_key': NETCORE_API, 'content-type': 'application/json'},
       body: JSON.stringify({
-        from: { email: from, name: fromName },
+        from: {email: from, name: fromName},
         subject,
-        content: [{ type: "html", value: html }],
-        personalizations: [{ to: [{ email: to }] }],
+        content: [{type: 'html', value: html}],
+        personalizations: [{to: [{email: to}]}],
       }),
     };
 
     const response = await fetch(
-      "https://api.pepipost.com/v5.1/mail/send",
-      options
+        'https://api.pepipost.com/v5.1/mail/send',
+        options,
     );
 
     console.log(response.status);

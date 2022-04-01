@@ -1,16 +1,16 @@
-import fetch from "node-fetch";
+import fetch from 'node-fetch';
 
-const { RELOADLY_CLIENT_ID, RELOADLY_CLIENT_SECRET } = process.env;
+const {RELOADLY_CLIENT_ID, RELOADLY_CLIENT_SECRET} = process.env;
 
 const auth = async () => {
-  let response: any = await fetch("https://auth.reloadly.com/oauth/token", {
-    method: "post",
-    headers: { "content-type": "application/json" },
+  let response: any = await fetch('https://auth.reloadly.com/oauth/token', {
+    method: 'post',
+    headers: {'content-type': 'application/json'},
     body: JSON.stringify({
       client_id: RELOADLY_CLIENT_ID,
       client_secret: RELOADLY_CLIENT_SECRET,
-      grant_type: "client_credentials",
-      audience: "https://topups.reloadly.com",
+      grant_type: 'client_credentials',
+      audience: 'https://topups.reloadly.com',
     }),
   });
 
@@ -19,18 +19,18 @@ const auth = async () => {
   return response;
 };
 
-export const request = async ({ url, method, body = null }) => {
+export const request = async ({url, method, body = null}) => {
   try {
     if (body) {
       body = JSON.stringify(body);
     }
-    const { access_token }: any = await auth();
+    const {access_token}: any = await auth();
 
     let response: any = await fetch(`https://topups.reloadly.com/${url}`, {
       method,
       headers: {
-        authorization: `Bearer ${access_token}`,
-        "content-type": "application/json",
+        'authorization': `Bearer ${access_token}`,
+        'content-type': 'application/json',
       },
       body,
     });
@@ -41,7 +41,7 @@ export const request = async ({ url, method, body = null }) => {
   } catch (error) {
     return {
       status: false,
-      message: "An error occured calling reloadly",
+      message: 'An error occured calling reloadly',
     };
   }
 };

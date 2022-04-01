@@ -1,4 +1,4 @@
-import { Response } from "express";
+import {Response} from 'express';
 
 export const response = (res: Response, data: object, code: number = 200) => {
   res.status(code).send({

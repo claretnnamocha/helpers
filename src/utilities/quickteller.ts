@@ -1,20 +1,20 @@
-import fetch from "node-fetch";
+import fetch from 'node-fetch';
 
-const { INTERSWITCH_CLIENT_ID, INTERSWITCH_SECRET } = process.env;
-const baseURL = "https://sandbox.interswitchng.com";
+const {INTERSWITCH_CLIENT_ID, INTERSWITCH_SECRET} = process.env;
+const baseURL = 'https://sandbox.interswitchng.com';
 
 const auth = async () => {
   let response: any = await fetch(`${baseURL}/passport/oauth/token`, {
     headers: {
-      authorization: `Basic ${Buffer.from(
-        `${INTERSWITCH_CLIENT_ID}:${INTERSWITCH_SECRET}`
-      ).toString("base64")}`,
-      "content-type": "application/json",
+      'authorization': `Basic ${Buffer.from(
+          `${INTERSWITCH_CLIENT_ID}:${INTERSWITCH_SECRET}`,
+      ).toString('base64')}`,
+      'content-type': 'application/json',
     },
     body: JSON.stringify({
-      grant_type: "client_credentials",
+      grant_type: 'client_credentials',
     }),
-    method: "post",
+    method: 'post',
   });
 
   response = await response.json();
@@ -22,30 +22,30 @@ const auth = async () => {
   return response;
 };
 
-const request = async ({ url, body = {}, method = "get" }) => {
+const request = async ({url, body = {}, method = 'get'}) => {
   try {
-    const { access_token, token_type } = await auth();
+    const {access_token, token_type} = await auth();
 
     console.log(token_type);
 
     let response: any = await fetch(`${baseURL}/api/v2/quickteller/${url}`, {
       method,
       headers: {
-        authorization: `InterswitchAuth ${access_token}`,
-        "content-type": "application/json",
+        'authorization': `InterswitchAuth ${access_token}`,
+        'content-type': 'application/json',
       },
       body: Object.keys(body).length ? JSON.stringify(body) : null,
     });
 
     response = await response.json();
-    if ("error" in response) {
+    if ('error' in response) {
       response.status = false;
       response.message = response.error.message;
       delete response.error;
       delete response.errors;
     }
 
-    if ("code" in response) {
+    if ('code' in response) {
       response.status = true;
 
       delete response.code;
@@ -55,21 +55,21 @@ const request = async ({ url, body = {}, method = "get" }) => {
   } catch (error) {
     return {
       status: false,
-      message: "An error occured calling quickteller"
+      message: 'An error occured calling quickteller',
     };
   }
 };
 
 export const getCategories = async () => {
-  return await request({ url: "categorys" });
+  return await request({url: 'categorys'});
 };
 
-export const getBillersInCategory = async ({ id }) => {
-  return await request({ url: `categorys/${id}/billers` });
+export const getBillersInCategory = async ({id}) => {
+  return await request({url: `categorys/${id}/billers`});
 };
 
-export const getBillerItems = async ({ billerId }) => {
-  return await request({ url: `billers/${billerId}/paymentitems` });
+export const getBillerItems = async ({billerId}) => {
+  return await request({url: `billers/${billerId}/paymentitems`});
 };
 
 export const verifyCustomer = async ({
@@ -77,8 +77,8 @@ export const verifyCustomer = async ({
   serviceId: paymentCode,
 }) => {
   return await request({
-    url: "customers/validations",
-    body: { customers: [{ customerId, paymentCode }] },
+    url: 'customers/validations',
+    body: {customers: [{customerId, paymentCode}]},
   });
 };
 
@@ -88,17 +88,16 @@ export const payBill = async ({
   productId: paymentCode,
 }) => {
   amount = amount * 100;
-  let response: any;
-  response = await request({
-    url: "/payments/advices",
+  const response = await request({
+    url: '/payments/advices',
     body: {
-      terminalId: "UNKOWN",
+      terminalId: 'UNKOWN',
       amount,
       customerId,
       paymentCode,
-      requestReference: "UNKOWN",
+      requestReference: 'UNKOWN',
     },
-    method: "post",
+    method: 'post',
   });
 
   return response;

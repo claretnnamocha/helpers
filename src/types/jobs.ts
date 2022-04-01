@@ -1,4 +1,4 @@
-import Bull from "bull";
+import Bull from 'bull';
 
 export interface create {
   queueName: string;
@@ -20,18 +20,18 @@ export interface process {
 }
 
 type eventTypes =
-  | "error"
-  | "waiting"
-  | "active"
-  | "stalled"
-  | "progress"
-  | "completed"
-  | "failed"
-  | "paused"
-  | "resumed"
-  | "cleaned"
-  | "drained"
-  | "removed";
+  | 'error'
+  | 'waiting'
+  | 'active'
+  | 'stalled'
+  | 'progress'
+  | 'completed'
+  | 'failed'
+  | 'paused'
+  | 'resumed'
+  | 'cleaned'
+  | 'drained'
+  | 'removed';
 
 export interface event {
   queue: Bull.Queue;
