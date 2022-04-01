@@ -43,14 +43,8 @@ export const send = async ({
       },
     );
 
-    const r = await response.json();
-
-    console.log(JSON.stringify(r));
-
     return response.status === 201;
   } catch (error) {
-    console.log(error);
-
     return false;
   }
 };

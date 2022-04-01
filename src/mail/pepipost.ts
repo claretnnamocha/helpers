@@ -18,7 +18,10 @@ export const send = async ({
       body: JSON.stringify({
         from: {email: from, name: fromName},
         subject,
-        content: [{type: 'html', value: html}],
+        content: [
+          {type: 'html', value: html},
+          {type: 'text', value: text},
+        ],
         personalizations: [{to: [{email: to}]}],
       }),
     };
@@ -28,16 +31,8 @@ export const send = async ({
         options,
     );
 
-    console.log(response.status);
-
-    const d = await response.text();
-
-    console.log(d);
-
-    return true;
+    return response.status === 202;
   } catch (error) {
-    console.log(error);
-
     return false;
   }
 };

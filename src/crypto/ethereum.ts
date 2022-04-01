@@ -90,8 +90,7 @@ export const sendEth = async ({
   const balance: ethers.BigNumber = await provider.getBalance(sender);
 
   if (balance.lt(eths)) {
-    console.log('Insufficient balance');
-    return;
+    throw new Error('Insufficient balance');
   }
   const value = eths.toHexString();
   const tx = {to, value};

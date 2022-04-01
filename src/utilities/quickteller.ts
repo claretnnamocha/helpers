@@ -24,9 +24,7 @@ const auth = async () => {
 
 const request = async ({url, body = {}, method = 'get'}) => {
   try {
-    const {access_token, token_type} = await auth();
-
-    console.log(token_type);
+    const {access_token} = await auth();
 
     let response: any = await fetch(`${baseURL}/api/v2/quickteller/${url}`, {
       method,
