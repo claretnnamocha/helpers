@@ -1,5 +1,6 @@
 export * as gis from './src/gis';
 export * as jwt from './src/jwt';
+export * as jobs from './src/jobs';
 export * as mail from './src/mail';
 export * as payments from './src/payments';
 export {response} from './src/response';
