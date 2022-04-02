@@ -81,8 +81,62 @@ export const estimateEthGasFee = async ({
   if (balance.lt(ether)) throw new Error('Insufficient balance');
 
   const value = ether.toHexString();
-  const tx = {to, value};
-  const fee: any = await provider.estimateGas(tx);
+  const txObject = {to, value};
+  const fee: any = await provider.estimateGas(txObject);
+  const wei = fee.toNumber();
+  const eths = wei / Math.pow(10, 18);
+
+  return {wei, ethers: eths};
+};
+
+export const estimateERC20GasFee = async ({
+  address,
+  contractAddress,
+  amount,
+  privateKey,
+  decimals,
+  network = 'mainnet',
+}: SendErc20): Promise<Amount> => {
+  const to = Web3.utils.toChecksumAddress(address);
+  const value: ethers.BigNumber = ethers.utils.parseUnits(
+      amount.toString(),
+      decimals,
+  );
+
+  const provider: JsonRpcProvider = getProvider({network});
+  const signer = new ethers.Wallet(privateKey, provider);
+  const from = signer.address;
+  const tokenContract = getERC20Contract({contractAddress, signer});
+
+  const balance: ethers.BigNumber = await tokenContract.balanceOf(from);
+
+  if (balance.lt(value)) throw new Error('Insufficient ERC20 balance');
+
+  const data = tokenContract.interface.encodeFunctionData('transfer', [
+    to,
+    amount,
+  ]);
+
+  let gasPrice: ethers.BigNumber | number = await provider.getGasPrice();
+  gasPrice = gasPrice.toNumber();
+  gasPrice = Math.ceil(gasPrice);
+
+  const nonce = await provider.getTransactionCount(from);
+
+  const txObject: any = {
+    from,
+    to: tokenContract.address,
+    data,
+    gasPrice: ethers.utils.hexlify(gasPrice),
+    nonce,
+  };
+  let gasLimit: ethers.BigNumber | number;
+  gasLimit = await provider.estimateGas(txObject);
+  gasLimit = Math.ceil(gasLimit.toNumber());
+
+  txObject.gasLimit = ethers.utils.hexlify(gasLimit);
+
+  const fee: any = await provider.estimateGas(txObject);
   const wei = fee.toNumber();
   const eths = wei / Math.pow(10, 18);
 
