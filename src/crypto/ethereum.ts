@@ -11,6 +11,8 @@ import {
   MnemonicOnly,
   Network,
   SendEth,
+  SendErc20,
+  GetERC20Balance,
 } from '../types/crypto/ethereum';
 
 const getEthRpcLink = ({network = 'mainnet'}: Network): string => {
@@ -25,11 +27,25 @@ const getProvider = ({network = 'mainnet'}: Network): JsonRpcProvider => {
   return new JsonRpcProvider(link);
 };
 
-export const createEthAddress = ({network = 'mainnet'}: Network): Wallet => {
-  const provider = getProvider({network});
-  const {address, privateKey} = ethers.Wallet.createRandom({
-    JsonRpcProvider: provider,
-  });
+const getERC20Contract = ({contractAddress, signer}) => {
+  return new ethers.Contract(
+      contractAddress,
+      [
+        'function approve(address _spender, uint256 _value) ' +
+        'public returns (bool success)',
+        'function transferFrom(address sender, address recipient,' +
+        ' uint256 amount) external returns (bool)',
+        'function transfer(address recipient, uint256 amount)' +
+        ' external returns (bool)',
+        'function balanceOf(address account) external view ' +
+        'returns (uint256)',
+      ],
+      signer,
+  );
+};
+
+export const createEthAddress = (): Wallet => {
+  const {address, privateKey} = ethers.Wallet.createRandom();
   return {address, privateKey};
 };
 
@@ -91,12 +107,65 @@ export const sendEth = async ({
     throw new Error('Insufficient balance');
   }
   const value = eths.toHexString();
-  const tx = {to, value};
+  const txObject = {to, value};
 
   const wallet = new ethers.Wallet(privateKey).connect(provider);
 
-  const trx = await wallet.sendTransaction(tx);
-  return await trx.wait();
+  const tx = await wallet.sendTransaction(txObject);
+  return await tx.wait();
+};
+
+export const sendERC20Token = async ({
+  address,
+  contractAddress,
+  amount,
+  privateKey,
+  decimals,
+  network = 'mainnet',
+}: SendErc20): Promise<TransactionReceipt> => {
+  const to = Web3.utils.toChecksumAddress(address);
+  const value: ethers.BigNumber = ethers.utils.parseUnits(
+      amount.toString(),
+      decimals,
+  );
+
+  const provider: JsonRpcProvider = getProvider({network});
+  const signer = new ethers.Wallet(privateKey, provider);
+  const from = signer.address;
+  const tokenContract = getERC20Contract({contractAddress, signer});
+
+  const balance: ethers.BigNumber = await tokenContract.balanceOf(from);
+
+  if (balance.lt(value)) throw new Error('Insufficient ERC20 balance');
+
+  const data = tokenContract.interface.encodeFunctionData('transfer', [
+    to,
+    amount,
+  ]);
+
+  let gasPrice: ethers.BigNumber | number = await provider.getGasPrice();
+  gasPrice = gasPrice.toNumber();
+  gasPrice = Math.ceil(gasPrice);
+
+  const nonce = await provider.getTransactionCount(from);
+
+  const txObject: any = {
+    from,
+    to: tokenContract.address,
+    data,
+    gasPrice: ethers.utils.hexlify(gasPrice),
+    nonce,
+  };
+  let gasLimit: ethers.BigNumber | number;
+  gasLimit = await provider.estimateGas(txObject);
+  gasLimit = Math.ceil(gasLimit.toNumber());
+
+  txObject.gasLimit = ethers.utils.hexlify(gasLimit);
+
+  const wallet = new ethers.Wallet(privateKey, provider);
+
+  const tx = await wallet.sendTransaction(txObject);
+  return await tx.wait();
 };
 
 export const getEthBalance = async ({
@@ -106,8 +175,26 @@ export const getEthBalance = async ({
   const provider: JsonRpcProvider = getProvider({network});
   const balance = await provider.getBalance(address);
 
-  const wei = balance.toNumber();
+  const wei = parseInt(balance.toString());
   const eths = wei / Math.pow(10, 18);
+
+  return {wei, ethers: eths};
+};
+
+export const getERC20Balance = async ({
+  address,
+  contractAddress,
+  decimals,
+  network = 'mainnet',
+}: GetERC20Balance): Promise<Amount> => {
+  const signer: JsonRpcProvider = getProvider({network});
+
+  const tokenContract = getERC20Contract({contractAddress, signer});
+
+  const balance: ethers.BigNumber = await tokenContract.balanceOf(address);
+
+  const wei = parseInt(balance.toString());
+  const eths = wei / Math.pow(10, decimals);
 
   return {wei, ethers: eths};
 };

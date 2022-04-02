@@ -14,6 +14,13 @@ export interface GetBalance {
   address: string;
 }
 
+export interface GetERC20Balance {
+  network?: network;
+  address: string;
+  contractAddress: string;
+  decimals: number;
+}
+
 export interface GetTrxnHash {
   network?: network;
   trxid: string;
@@ -45,6 +52,15 @@ export interface SendEth {
   network?: network;
   amount: number;
   address: string;
+  privateKey: string;
+}
+
+export interface SendErc20 {
+  network?: network;
+  amount: number;
+  decimals: number;
+  address: string;
+  contractAddress: string;
   privateKey: string;
 }
 

@@ -32,7 +32,7 @@ describe('--ethereum--', () => {
 
   describe('Generate wallets', () => {
     it('can generate random address', async () => {
-      const {address} = ethereum.createEthAddress({});
+      const {address} = ethereum.createEthAddress();
       assert.ok(address);
     });
 
@@ -41,6 +41,7 @@ describe('--ethereum--', () => {
         mnemonic,
         index: 0,
       });
+
       assert.equal(address, '0x6EB14A9a24eB2233731851810192A5c79B37F5C3');
     });
 
@@ -64,6 +65,70 @@ describe('--ethereum--', () => {
           '0xea4fbcf6d15e27d4341549f8707a87cb40440c28d59580db82fa7013c4cd363c',
       });
       assert.equal(address, '0x287B7Df28D116839be46304dbcED3f3980319b40');
+    });
+  });
+
+  describe('Get Balances', () => {
+    const {address} = ethereum.createEthAddressFromMnemonic({
+      mnemonic,
+      index: 0,
+    });
+
+    it('can get ETH balance', async () => {
+      const balance = await ethereum.getEthBalance({
+        address,
+        network: 'rinkeby',
+      });
+
+      assert.ok('ethers' in balance);
+      assert.ok('wei' in balance);
+    });
+
+    it('can get ERC20 token balance (USDT)', async () => {
+      const balance = await ethereum.getERC20Balance({
+        address,
+        network: 'rinkeby',
+        contractAddress: '0xD9BA894E0097f8cC2BBc9D24D308b98e36dc6D02',
+        decimals: 18,
+      });
+
+      assert.ok('ethers' in balance);
+      assert.ok('wei' in balance);
+    });
+  });
+
+  describe('Send funds', () => {
+    // sender
+    const {privateKey} = ethereum.createEthAddressFromMnemonic({
+      mnemonic,
+      index: 0,
+    });
+
+    // reciever
+    const {address} = ethereum.createEthAddress();
+
+    it('can send ETH', async () => {
+      const {transactionHash} = await ethereum.sendEth({
+        address,
+        amount: 0.000001,
+        privateKey,
+        network: 'rinkeby',
+      });
+
+      assert.ok(transactionHash);
+    });
+
+    it('can send ERC20 token (USDT)', async () => {
+      const {transactionHash} = await ethereum.sendERC20Token({
+        address,
+        amount: 1,
+        privateKey,
+        network: 'rinkeby',
+        contractAddress: '0xD9BA894E0097f8cC2BBc9D24D308b98e36dc6D02',
+        decimals: 18,
+      });
+
+      assert.ok(transactionHash);
     });
   });
 });
