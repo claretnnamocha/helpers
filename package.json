@@ -7,7 +7,7 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "test": "mocha --require ts-node/register tests/**/*.spec.ts --timeout 10000",
+    "test": "mocha --require ts-node/register tests/**/*.spec.ts --timeout 120000",
     "lint": "eslint --ext .js,.ts .",
     "lint:fix": "yarn run lint --fix"
   },
