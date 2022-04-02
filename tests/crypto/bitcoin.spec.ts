@@ -68,4 +68,37 @@ describe('--bitcoin--', () => {
       assert.equal(address, '17ncisdNHXF4ApAojAESYz6vUayUwzZ3qL');
     });
   });
+
+  describe('Transactions', () => {
+    // sender
+    const {address: sender, wif} = bitcoin.createBtcAddressFromMnemonic({
+      mnemonic,
+      index: 0,
+      testnet: true,
+    });
+
+    // reciever
+    const {address} = bitcoin.createBtcAddress({testnet: true});
+
+    it('can get balance', async () => {
+      const balance = await bitcoin.getBtcBalance({
+        address: sender,
+        testnet: true,
+      });
+
+      assert.ok('btc' in balance);
+      assert.ok('satoshi' in balance);
+    });
+
+    it('can send BTC', async () => {
+      const {transactionId} = await bitcoin.send({
+        addresses: [address],
+        testnet: true,
+        wif,
+        amounts: [0.0000001],
+      });
+
+      assert.ok(transactionId);
+    });
+  });
 });

@@ -8,7 +8,6 @@ import {
   Amount,
   CreateAddress,
   GetBalance,
-  GetTrxnHash,
   ImportAddress,
   UTXO,
   Wallet,
@@ -22,6 +21,11 @@ import {
   Send,
   SendWithHD,
   SendBTC,
+  TransactionReceipt,
+  GetTxHash,
+  NetworkOnly,
+  CalculateTxFee,
+  GatherUTXOS,
 } from '../types/crypto/bitcoin';
 
 const ECPair = ecPairFactory(ecc);
@@ -32,7 +36,7 @@ const validator = (
     signature: Buffer,
 ): boolean => ECPair.fromPublicKey(pubkey).verify(msghash, signature);
 
-const getBaseURL = ({testnet = false}) => {
+const getBaseURL = ({testnet = false}: NetworkOnly) => {
   return testnet ?
     'https://blockstream.info/testnet/api' :
     'https://blockstream.info/api';
@@ -46,7 +50,7 @@ const satoshiToBtc = (satoshi: number) => {
   return satoshi / Math.pow(10, 8);
 };
 
-const calculateTxFee = async ({testnet = false, tx}) => {
+const calculateTxFee = async ({testnet = false, tx}: CalculateTxFee) => {
   let fee: number;
 
   const link = getBaseURL({testnet}) + '/mempool';
@@ -78,7 +82,7 @@ const calculateTxFee = async ({testnet = false, tx}) => {
   return {satoshi, btc};
 };
 
-const gatherUtxos = async ({utxos, testnet}) => {
+const gatherUtxos = async ({utxos, testnet}: GatherUTXOS) => {
   const network = getBtcNetwork({testnet});
   const psbt = new bitcoin.Psbt({network});
   let total = 0;
@@ -86,16 +90,16 @@ const gatherUtxos = async ({utxos, testnet}) => {
   for (const utxo of utxos) {
     total += utxo.value;
 
-    const trxid = utxo.txid;
+    const txid = utxo.txid;
     const index = utxo.vout;
     let nonWitnessUtxo: string | Buffer = await getUtxosHash({
-      trxid,
+      txid,
       testnet,
     });
     nonWitnessUtxo = Buffer.from(nonWitnessUtxo, 'hex');
 
     psbt.addInput({
-      hash: trxid,
+      hash: txid,
       index,
       nonWitnessUtxo,
     });
@@ -110,13 +114,16 @@ const estimateBtcFee = async ({
   amounts,
   addresses,
   keyPair,
-}) => {
+}): Promise<Amount> => {
   let {satoshi: balance}: Amount = await getBtcBalance({
     address: sender,
     testnet,
   });
 
+  amounts = amounts.map((amount) => parseBTC(amount));
+
   const total = amounts.reduce((a, b) => a + b, 0);
+
   if (total > balance) throw new Error('Insufficient balance');
 
   const utxos: Array<UTXO> = await getUtxos({address: sender, testnet});
@@ -150,7 +157,7 @@ const sendBtc = async ({
   sender,
   keyPair,
   testnet = false,
-}: SendBTC): Promise<string> => {
+}: SendBTC): Promise<TransactionReceipt> => {
   let {satoshi: balance}: Amount = await getBtcBalance({
     address: sender,
     testnet,
@@ -159,6 +166,7 @@ const sendBtc = async ({
   amounts = amounts.map((amount) => parseBTC(amount));
 
   const total = amounts.reduce((a, b) => a + b, 0);
+
   if (total > balance) throw new Error('Insufficient balance');
 
   const utxos: Array<UTXO> = await getUtxos({address: sender, testnet});
@@ -170,11 +178,9 @@ const sendBtc = async ({
     const amount = amounts[i];
 
     psbt.addOutput({address, value: amount});
-
-    balance -= amount;
   }
 
-  balance -= fee;
+  balance = balance - total - fee;
 
   psbt.addOutput({address: sender, value: balance});
 
@@ -188,10 +194,17 @@ const sendBtc = async ({
   const link = getBaseURL({testnet}) + '/tx';
 
   const response = await fetch(link, {method: 'post', body});
-  return await response.text();
+  const text = await response.text();
+
+  const hexRegex = /^(0x|0X)?[a-fA-F0-9]+$/;
+  const sent = hexRegex.test(text);
+
+  if (!sent) throw new Error(text);
+
+  return {transactionId: text};
 };
 
-const getBtcNetwork = ({testnet}): bitcoin.Network => {
+const getBtcNetwork = ({testnet = false}: NetworkOnly) => {
   return testnet ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
 };
 
@@ -208,10 +221,10 @@ const getUtxos = async ({
 };
 
 const getUtxosHash = async ({
-  trxid,
+  txid,
   testnet = false,
-}: GetTrxnHash): Promise<string> => {
-  const link = getBaseURL({testnet}) + `/tx/${trxid}/hex`;
+}: GetTxHash): Promise<string> => {
+  const link = getBaseURL({testnet}) + `/tx/${txid}/hex`;
 
   const response = await fetch(link);
   const data = await response.text();
@@ -233,17 +246,23 @@ export const entropyToMnemonic = ({entropy}: EntropyOnly) => {
 
 export const generateXPubKeyFromMnemonic = async ({
   mnemonic,
+  testnet = false,
 }: MnemonicOnly): Promise<string> => {
+  const network = getBtcNetwork({testnet});
+
   const seed = await bip39.mnemonicToSeed(mnemonic);
-  const node = bip32.fromSeed(seed);
+  const node = bip32.fromSeed(seed, network);
   return node.neutered().toBase58();
 };
 
 export const generateXPrvKeyFromMnemonic = async ({
   mnemonic,
+  testnet = false,
 }: MnemonicOnly): Promise<string> => {
+  const network = getBtcNetwork({testnet});
+
   const seed = await bip39.mnemonicToSeed(mnemonic);
-  const node = bip32.fromSeed(seed);
+  const node = bip32.fromSeed(seed, network);
   return node.toBase58();
 };
 
@@ -270,7 +289,7 @@ export const createBtcAddressFromMnemonic = ({
   const network = getBtcNetwork({testnet});
 
   const seed = bip39.mnemonicToSeedSync(mnemonic);
-  const root = bip32.fromSeed(seed);
+  const root = bip32.fromSeed(seed, network);
 
   const path = `m/49'/1'/0'/0/${index}`;
   const child = root.derivePath(path);
@@ -324,7 +343,7 @@ export const getBtcBalance = async ({
   testnet = false,
 }: GetBalance): Promise<Amount> => {
   const link = testnet ?
-    `http://api.blockcypher.com/v1/btc/test3//addrs/${address}` :
+    `http://api.blockcypher.com/v1/btc/test3/addrs/${address}` :
     `https://blockchain.info/address/${address}?format=jsonrawaddr`;
   const response = await fetch(link);
   const data: any = await response.json();
@@ -339,7 +358,7 @@ export const estimateFee = async ({
   addresses,
   amounts,
   testnet = false,
-}: EstimateFee): Promise<any> => {
+}: EstimateFee): Promise<Amount> => {
   const network = getBtcNetwork({testnet});
 
   const {address: sender}: Wallet = importBtcAddress({
@@ -365,7 +384,7 @@ export const estimateFeeWithHDKeys = async ({
   amounts,
   index,
   testnet = false,
-}: EstimateFeeWithHD): Promise<any> => {
+}: EstimateFeeWithHD): Promise<Amount> => {
   const network = getBtcNetwork({testnet});
 
   const {address: sender}: AddressOnly = createBtcAddressFromXPubKey({
@@ -389,9 +408,9 @@ export const send = async ({
   wif,
   addresses,
   amounts,
-  fee,
+  fee = null,
   testnet = false,
-}: Send): Promise<any> => {
+}: Send): Promise<TransactionReceipt> => {
   const network = getBtcNetwork({testnet});
 
   const {address: sender}: Wallet = importBtcAddress({
@@ -400,6 +419,11 @@ export const send = async ({
   });
 
   const keyPair = ECPair.fromWIF(wif, network);
+
+  if (!fee) {
+    const {satoshi} = await estimateFee({wif, addresses, amounts, testnet});
+    fee = satoshi;
+  }
 
   return await sendBtc({addresses, amounts, fee, keyPair, testnet, sender});
 };
@@ -412,7 +436,7 @@ export const sendWithHDKeys = async ({
   index,
   fee,
   testnet = false,
-}: SendWithHD): Promise<any> => {
+}: SendWithHD): Promise<TransactionReceipt> => {
   const network = getBtcNetwork({testnet});
 
   const {address: sender}: AddressOnly = createBtcAddressFromXPubKey({
@@ -420,7 +444,20 @@ export const sendWithHDKeys = async ({
     index,
     testnet,
   });
+
   const keyPair = ECPair.fromPrivateKey(Buffer.from(xprv), {network});
+
+  if (!fee) {
+    const {satoshi} = await estimateFeeWithHDKeys({
+      xprv,
+      xpub,
+      addresses,
+      amounts,
+      index,
+      testnet,
+    });
+    fee = satoshi;
+  }
 
   return await sendBtc({addresses, amounts, fee, keyPair, testnet, sender});
 };

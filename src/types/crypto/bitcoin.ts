@@ -1,13 +1,9 @@
 import {ECPairInterface} from 'ecpair';
+import {Transaction} from 'bitcoinjs-lib';
 
 export interface GetBalance {
   testnet?: boolean;
   address: string;
-}
-
-export interface GetTrxnHash {
-  testnet?: boolean;
-  trxid: string;
 }
 
 export interface ImportAddress {
@@ -19,8 +15,8 @@ export interface CreateAddress {
   testnet?: boolean;
 }
 
-export interface Transaction {
-  trxid: string;
+export interface TransactionReceipt {
+  transactionId: string;
 }
 
 export interface Amount {
@@ -93,6 +89,7 @@ export interface ImportAddressFromMnemonic {
 
 export interface MnemonicOnly {
   mnemonic: string;
+  testnet?: boolean;
 }
 
 export interface AddressOnly {
@@ -107,4 +104,23 @@ export interface CreateAddressFromXPub {
   xpub: string;
   index: number;
   testnet?: boolean;
+}
+
+export interface GatherUTXOS {
+  testnet?: boolean;
+  utxos: Array<UTXO>;
+}
+
+export interface GetTxHash {
+  testnet?: boolean;
+  txid: string;
+}
+
+export interface NetworkOnly {
+  testnet?: boolean;
+}
+
+export interface CalculateTxFee {
+  testnet?: boolean;
+  tx: Transaction;
 }
