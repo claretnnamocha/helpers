@@ -21,6 +21,7 @@ import {
   EstimateFee,
   Send,
   SendWithHD,
+  SendBTC,
 } from '../types/crypto/bitcoin';
 
 const ECPair = ecPairFactory(ecc);
@@ -35,6 +36,14 @@ const getBaseURL = ({testnet = false}) => {
   return testnet ?
     'https://blockstream.info/testnet/api' :
     'https://blockstream.info/api';
+};
+
+const parseBTC = (btc: number) => {
+  return (btc * Math.pow(10, 8)) | 0;
+};
+
+const satoshiToBtc = (satoshi: number) => {
+  return satoshi / Math.pow(10, 8);
 };
 
 const calculateTxFee = async ({testnet = false, tx}) => {
@@ -64,7 +73,7 @@ const calculateTxFee = async ({testnet = false, tx}) => {
   }
 
   const satoshi = Math.ceil(fee) | 0;
-  const btc = satoshi / Math.pow(10, 8);
+  const btc = satoshiToBtc(satoshi);
 
   return {satoshi, btc};
 };
@@ -141,11 +150,13 @@ const sendBtc = async ({
   sender,
   keyPair,
   testnet = false,
-}): Promise<string> => {
+}: SendBTC): Promise<string> => {
   let {satoshi: balance}: Amount = await getBtcBalance({
     address: sender,
     testnet,
   });
+
+  amounts = amounts.map((amount) => parseBTC(amount));
 
   const total = amounts.reduce((a, b) => a + b, 0);
   if (total > balance) throw new Error('Insufficient balance');
@@ -208,15 +219,15 @@ const getUtxosHash = async ({
   return data;
 };
 
-export const generateMnemonic = (): string => {
+export const generateMnemonic = () => {
   return bip39.generateMnemonic();
 };
 
-export const mnemonicToEntropy = ({mnemonic}: MnemonicOnly): string => {
+export const mnemonicToEntropy = ({mnemonic}: MnemonicOnly) => {
   return bip39.mnemonicToEntropy(mnemonic);
 };
 
-export const entropyToMnemonic = ({entropy}: EntropyOnly): string => {
+export const entropyToMnemonic = ({entropy}: EntropyOnly) => {
   return bip39.entropyToMnemonic(entropy);
 };
 
@@ -318,7 +329,7 @@ export const getBtcBalance = async ({
   const response = await fetch(link);
   const data: any = await response.json();
   const satoshi: number = data.final_balance;
-  const btc: number = satoshi / Math.pow(10, 8);
+  const btc: number = satoshiToBtc(satoshi);
 
   return {satoshi, btc};
 };

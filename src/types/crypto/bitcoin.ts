@@ -1,3 +1,5 @@
+import {ECPairInterface} from 'ecpair';
+
 export interface GetBalance {
   testnet?: boolean;
   address: string;
@@ -68,6 +70,15 @@ export interface UTXO {
 
 export interface Send extends EstimateFee {
   fee?: number;
+}
+
+export interface SendBTC {
+  amounts: Array<number>;
+  addresses: Array<string>;
+  fee: number;
+  sender: string;
+  keyPair: ECPairInterface;
+  testnet?: boolean;
 }
 
 export interface SendWithHD extends EstimateFeeWithHD {
