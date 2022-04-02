@@ -15,6 +15,22 @@ import {
   GetERC20Balance,
 } from '../types/crypto/ethereum';
 
+const IERC20_ABI = [
+  'event Transfer(address indexed from,' +
+    ' address indexed to, uint256 value)',
+  'event Approval(address indexed owner,' +
+    ' address indexed spender, uint256 value)',
+  'function totalSupply() external view returns (uint256)',
+  'function balanceOf(address account) external view returns (uint256)',
+  'function transfer(address to, uint256 amount) external returns (bool)',
+  'function allowance(address owner, address' +
+    ' spender) external view returns (uint256)',
+  'function approve(address spender, uint256 ' +
+    'amount) external returns (bool)',
+  'function transferFrom(address from, address ' +
+    'to, uint256 amount) external returns (bool)',
+];
+
 const getEthRpcLink = ({network = 'mainnet'}: Network): string => {
   const {INFURA_API_KEY} = process.env;
 
@@ -28,20 +44,7 @@ const getProvider = ({network = 'mainnet'}: Network): JsonRpcProvider => {
 };
 
 const getERC20Contract = ({contractAddress, signer}) => {
-  return new ethers.Contract(
-      contractAddress,
-      [
-        'function approve(address _spender, uint256 _value) ' +
-        'public returns (bool success)',
-        'function transferFrom(address sender, address recipient,' +
-        ' uint256 amount) external returns (bool)',
-        'function transfer(address recipient, uint256 amount)' +
-        ' external returns (bool)',
-        'function balanceOf(address account) external view ' +
-        'returns (uint256)',
-      ],
-      signer,
-  );
+  return new ethers.Contract(contractAddress, IERC20_ABI, signer);
 };
 
 export const createEthAddress = (): Wallet => {
