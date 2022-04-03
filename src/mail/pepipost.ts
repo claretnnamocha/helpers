@@ -18,10 +18,7 @@ export const send = async ({
       body: JSON.stringify({
         from: {email: from || EMAIL_FROM, name: fromName || EMAIL_NAME},
         subject,
-        content: [
-          {type: 'html', value: html},
-          {type: 'text', value: text},
-        ],
+        content: [{type: 'html', value: html}],
         personalizations: [{to: [{email: to}]}],
       }),
     };
