@@ -1,2 +1,2 @@
-export * as bitcoinjs from './bitcoin';
-export * as ethersjs from './ethereum';
+export * as bitcoin from './bitcoin';
+export * as ethers from './ethereum';
