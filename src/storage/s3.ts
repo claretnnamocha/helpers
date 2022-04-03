@@ -4,15 +4,20 @@ import fs from 'fs';
 import {v4 as uuid} from 'uuid';
 import {DATAURI_REGEX} from '../types/storage';
 
-const {AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_BUCKET_NAME} =
-  process.env;
+const getEnv = () => {
+  const {AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_BUCKET_NAME} =
+    process.env;
 
-const s3 = new S3({
-  accessKeyId: AWS_ACCESS_KEY_ID,
-  secretAccessKey: AWS_SECRET_ACCESS_KEY,
-});
+  const s3 = new S3({
+    accessKeyId: AWS_ACCESS_KEY_ID,
+    secretAccessKey: AWS_SECRET_ACCESS_KEY,
+  });
+
+  return {s3, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_BUCKET_NAME};
+};
 
 export const upload = async (payload: any) => {
+  const {AWS_BUCKET_NAME, s3} = getEnv();
   const Body = fs.readFileSync(payload.path);
 
   const {mime} = await fromBuffer(Body);
@@ -30,6 +35,8 @@ export const upload = async (payload: any) => {
 };
 
 export const uploadBase64 = async (payloadString: string) => {
+  const {AWS_BUCKET_NAME, s3} = getEnv();
+
   try {
     const {mime} = await fromBuffer(
         Buffer.from(payloadString.replace(DATAURI_REGEX, ''), 'base64'),

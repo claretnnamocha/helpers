@@ -2,11 +2,11 @@ import fetch from 'node-fetch';
 import {v4 as uuid} from 'uuid';
 import {payments} from '../types';
 
-const {FLUTTERWAVE_SECRET_KEY, FLUTTERWAVE_HASH} = process.env;
-
 const baseURL = 'https://api.flutterwave.com/v3';
 
 const request = async ({url, body = {}, method = 'get'}) => {
+  const {FLUTTERWAVE_SECRET_KEY} = process.env;
+
   try {
     let response: any = await fetch(`${baseURL}/${url}`, {
       body: Object.keys(body).length ? JSON.stringify(body) : null,
@@ -68,6 +68,8 @@ export const transfer = async ({
 };
 
 export const handleWebhook = (params: payments.webhook) => {
+  const {FLUTTERWAVE_HASH} = process.env;
+
   const {headers, body} = params;
 
   if (headers['verif-hash'] !== FLUTTERWAVE_HASH) {

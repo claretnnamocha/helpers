@@ -4,14 +4,14 @@ import {google} from 'googleapis';
 import stream from 'stream';
 import {v4 as uuid} from 'uuid';
 
-const {
-  GOOGLE_CLIENT_SECRET,
-  GOOGLE_CLIENT_ID,
-  GOOGLE_REDIRECT_URI,
-  GOOGLE_REFRESH_TOKEN,
-} = process.env;
-
 const authenticate = () => {
+  const {
+    GOOGLE_CLIENT_SECRET,
+    GOOGLE_CLIENT_ID,
+    GOOGLE_REDIRECT_URI,
+    GOOGLE_REFRESH_TOKEN,
+  } = process.env;
+
   const auth = new google.auth.OAuth2(
       GOOGLE_CLIENT_ID,
       GOOGLE_CLIENT_SECRET,

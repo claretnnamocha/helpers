@@ -1,22 +1,22 @@
 import fetch from 'node-fetch';
 import {mail} from '../types';
 
-const {NETCORE_API, EMAIL_FROM, EMAIL_NAME} = process.env;
-
 export const send = async ({
   to,
   subject,
   text,
   html = null,
-  from = EMAIL_FROM,
-  fromName = EMAIL_NAME,
+  from = '',
+  fromName = '',
 }: mail.send) => {
+  const {NETCORE_API, EMAIL_FROM, EMAIL_NAME} = process.env;
+
   try {
     const options = {
       method: 'POST',
       headers: {'api_key': NETCORE_API, 'content-type': 'application/json'},
       body: JSON.stringify({
-        from: {email: from, name: fromName},
+        from: {email: from || EMAIL_FROM, name: fromName || EMAIL_NAME},
         subject,
         content: [
           {type: 'html', value: html},

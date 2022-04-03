@@ -1,19 +1,18 @@
 import {generateReciepient} from '.';
 import {mail} from '../types';
 
-const {SENDINBLUE_API_KEY, EMAIL_FROM, EMAIL_NAME} = process.env;
-
 export const send = async ({
   to,
   subject,
   text = '',
   html = '',
-  from = EMAIL_FROM,
-  fromName = EMAIL_NAME,
+  from = '',
+  fromName = '',
 }: mail.send) => {
+  const {SENDINBLUE_API_KEY, EMAIL_FROM, EMAIL_NAME} = process.env;
   try {
     const body = {
-      sender: {name: fromName, email: from},
+      sender: {name: fromName || EMAIL_NAME, email: from || EMAIL_FROM},
       to: generateReciepient(to),
       subject,
       htmlContent: html,

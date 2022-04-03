@@ -3,18 +3,19 @@ import {generateReciepient2} from '.';
 import {mail} from '../types';
 import FormData = require('form-data');
 
-const {MAILGUN_API_KEY, MAILGUN_DOMAIN, EMAIL_FROM, EMAIL_NAME} = process.env;
-
 export const send = async ({
   to,
   subject,
   text = '',
   html = '',
-  from = EMAIL_FROM,
-  fromName = EMAIL_NAME,
+  from = '',
+  fromName = '',
 }: mail.send) => {
+  const {MAILGUN_API_KEY, MAILGUN_DOMAIN, EMAIL_FROM, EMAIL_NAME} =
+    process.env;
+
   try {
-    from = `${fromName} <${from}>`;
+    from = `${fromName || EMAIL_NAME} <${from || EMAIL_FROM}>`;
 
     const fd = new FormData();
 

@@ -1,13 +1,18 @@
 import JWT, {JwtPayload} from 'jsonwebtoken';
 import {jwt} from './types';
 
-const {JWT_SECRET} = process.env;
+const getEnv = () => {
+  const {JWT_SECRET} = process.env;
+  return {JWT_SECRET};
+};
 
 export const generate = (payload: jwt.generate) => {
+  const {JWT_SECRET} = getEnv();
   return JWT.sign({...payload, timestamp: Date.now()}, JWT_SECRET);
 };
 
 export const verify = async (token: string) => {
+  const {JWT_SECRET} = getEnv();
   try {
     token = token.replace('Bearer ', '');
     const data: JwtPayload | any = JWT.verify(token, JWT_SECRET);

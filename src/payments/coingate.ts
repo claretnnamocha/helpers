@@ -2,12 +2,12 @@ import fetch from 'node-fetch';
 import {v4 as uuid} from 'uuid';
 import {payments} from '../types';
 
-const {COINGATE_BASEURL, COINGATE_CALLBACK_URL, COINGATE_APIKEY} =
-  process.env;
-
 export const initiateTransaction = async (
     params: payments.initiateTransaction,
 ) => {
+  const {COINGATE_BASEURL, COINGATE_CALLBACK_URL, COINGATE_APIKEY} =
+    process.env;
+
   const order_id = uuid();
 
   let response: any = await fetch(`${COINGATE_BASEURL}/orders`, {

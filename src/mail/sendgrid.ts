@@ -2,20 +2,20 @@ import fetch from 'node-fetch';
 import {generateReciepient} from '.';
 import {mail} from '../types';
 
-const {SENDGRID_API_KEY, EMAIL_FROM, EMAIL_NAME} = process.env;
-
 export const send = async ({
   to,
   subject,
   text = '',
   html = '',
-  from = EMAIL_FROM,
-  fromName = EMAIL_NAME,
+  from = '',
+  fromName = '',
 }: mail.send) => {
+  const {SENDGRID_API_KEY, EMAIL_FROM, EMAIL_NAME} = process.env;
+
   try {
     const body = {
       personalizations: [{to: generateReciepient(to)}],
-      from: {email: from, name: fromName},
+      from: {email: from || EMAIL_FROM, name: fromName || EMAIL_NAME},
       subject,
       content: [
         {type: 'text/html', value: html},

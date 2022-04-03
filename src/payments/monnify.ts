@@ -2,15 +2,11 @@ import fetch from 'node-fetch';
 import {v4 as uuid} from 'uuid';
 import {payments} from '../types';
 
-const {
-  MONNIFY_API_KEY,
-  MONNIFY_SECERET,
-  MONNIFY_CONTRACT_CODE,
-  MONNIFY_WALLET_ACCOUNT_NUMBER,
-} = process.env;
 const baseURL = 'https://sandbox.monnify.com/api';
 
 const auth = async () => {
+  const {MONNIFY_API_KEY, MONNIFY_SECERET} = process.env;
+
   let response: any = await fetch(`${baseURL}/v1/auth/login`, {
     headers: {
       'authorization': `Basic ${Buffer.from(
@@ -68,6 +64,8 @@ const request = async ({url, body = {}, method = 'get'}) => {
 };
 
 export const reserveAccount = async ({name, email}) => {
+  const {MONNIFY_CONTRACT_CODE} = process.env;
+
   return await request({
     url: 'v2/bank-transfer/reserved-accounts',
     body: {
@@ -106,8 +104,10 @@ export const transfer = async ({
   bank_code: destinationBankCode,
   amount,
   reason: narration,
-}: payments.transfer) =>
-  await request({
+}: payments.transfer) => {
+  const {MONNIFY_WALLET_ACCOUNT_NUMBER} = process.env;
+
+  return await request({
     url: `v2/disbursements/single`,
     body: {
       amount,
@@ -120,3 +120,4 @@ export const transfer = async ({
     },
     method: 'post',
   });
+};

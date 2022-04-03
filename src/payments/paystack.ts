@@ -2,11 +2,11 @@ import crypto from 'crypto';
 import fetch from 'node-fetch';
 import {payments} from '../types';
 
-const {PAYSTACK_SECRET_KEY} = process.env;
-
 const baseURL = 'https://api.paystack.co';
 
 const request = async ({url, body = {}, method = 'get'}) => {
+  const {PAYSTACK_SECRET_KEY} = process.env;
+
   try {
     let response: any = await fetch(`${baseURL}/${url}`, {
       body: Object.keys(body).length ? JSON.stringify(body) : null,
@@ -81,6 +81,8 @@ export const transfer = async ({
 };
 
 export const handleWebhook = (params: payments.webhook) => {
+  const {PAYSTACK_SECRET_KEY} = process.env;
+
   const {headers, body} = params;
 
   const hash = crypto

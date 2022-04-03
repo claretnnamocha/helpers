@@ -1,8 +1,8 @@
 import fetch from 'node-fetch';
 
-const {RELOADLY_CLIENT_ID, RELOADLY_CLIENT_SECRET} = process.env;
-
 const auth = async () => {
+  const {RELOADLY_CLIENT_ID, RELOADLY_CLIENT_SECRET} = process.env;
+
   let response: any = await fetch('https://auth.reloadly.com/oauth/token', {
     method: 'post',
     headers: {'content-type': 'application/json'},

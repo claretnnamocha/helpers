@@ -1,9 +1,10 @@
 import fetch from 'node-fetch';
 
-const {INTERSWITCH_CLIENT_ID, INTERSWITCH_SECRET} = process.env;
 const baseURL = 'https://sandbox.interswitchng.com';
 
 const auth = async () => {
+  const {INTERSWITCH_CLIENT_ID, INTERSWITCH_SECRET} = process.env;
+
   let response: any = await fetch(`${baseURL}/passport/oauth/token`, {
     headers: {
       'authorization': `Basic ${Buffer.from(

@@ -2,18 +2,16 @@ import fetch from 'node-fetch';
 import {generateReciepient} from '.';
 import {sms} from '../types';
 
-const {
-  AFRICASTALKING_APIKEY: apiKey,
-  AFRICASTALKING_USERNAME: username,
-  AFRICASTALKING_SENDER_ID,
-  AFRICASTALKING_SANDBOX,
-} = process.env;
+export const send = async ({to, body: message, from = null}: sms.send) => {
+  const {
+    AFRICASTALKING_APIKEY: apiKey,
+    AFRICASTALKING_USERNAME: username,
+    AFRICASTALKING_SENDER_ID,
+    AFRICASTALKING_SANDBOX,
+  } = process.env;
 
-export const send = async ({
-  to,
-  body: message,
-  from = AFRICASTALKING_SANDBOX ? null : AFRICASTALKING_SENDER_ID,
-}: sms.send) => {
+  from = AFRICASTALKING_SANDBOX ? null : AFRICASTALKING_SENDER_ID;
+
   try {
     to = generateReciepient(to);
     const details = {username, message, from, to};

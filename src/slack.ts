@@ -1,8 +1,9 @@
 import slack from 'slack-notify';
 import {slack as types} from './types';
-const {SLACK_WEBHOOK_URL} = process.env;
 
 export const notify = (params: types.notify) => {
+  const {SLACK_WEBHOOK_URL} = process.env;
+
   const Slack = slack(SLACK_WEBHOOK_URL);
   let notify: any;
 

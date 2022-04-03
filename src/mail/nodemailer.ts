@@ -2,16 +2,16 @@ import nodemailer from 'nodemailer';
 import {generateReciepient2} from '.';
 import {mail} from '../types';
 
-const {EMAIL_FROM, EMAIL_NAME} = process.env;
-
 export const send = async ({
   to,
   subject,
   text = '',
   html = '',
-  from = EMAIL_FROM,
-  fromName = EMAIL_NAME,
+  from = '',
+  fromName = '',
 }: mail.send) => {
+  const {EMAIL_FROM, EMAIL_NAME} = process.env;
+
   try {
     const testAccount = await nodemailer.createTestAccount();
 
@@ -25,7 +25,7 @@ export const send = async ({
       },
     });
 
-    from = `${fromName} <${from}>`;
+    from = `${fromName || EMAIL_NAME} <${from || EMAIL_FROM}>`;
 
     const info = await transporter.sendMail({
       from,

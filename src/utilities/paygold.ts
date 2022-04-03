@@ -1,8 +1,5 @@
 import _ from 'lodash';
 import fetch from 'node-fetch';
-
-const {PAYGOLD_USERNAME, PAYGOLD_PASSWORD} = process.env;
-
 const billerProducts = [
   {
     name: 'MTN Data 1GB (SME)',
@@ -529,6 +526,8 @@ export const electricityBillers = [
 ];
 
 const request = async ({url, body = {}}) => {
+  const {PAYGOLD_USERNAME, PAYGOLD_PASSWORD} = process.env;
+
   try {
     body = {...body, username: PAYGOLD_USERNAME, password: PAYGOLD_PASSWORD};
     const searchParams = new URLSearchParams(body);
