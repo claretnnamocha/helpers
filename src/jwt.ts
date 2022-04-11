@@ -6,18 +6,22 @@ const getEnv = () => {
   return {JWT_SECRET};
 };
 
-export const generate = ({payload, expiresIn = null}: jwt.generate) => {
+export const generate = ({
+  payload,
+  secret = null,
+  expiresIn = null,
+}: jwt.generate) => {
   const {JWT_SECRET} = getEnv();
-  return JWT.sign({...payload, timestamp: Date.now()}, JWT_SECRET, {
+  return JWT.sign({...payload, timestamp: Date.now()}, secret || JWT_SECRET, {
     expiresIn,
   });
 };
 
-export const verify = async (token: string) => {
+export const verify = async ({token, secret = null}: jwt.verify) => {
   const {JWT_SECRET} = getEnv();
   try {
     token = token.replace('Bearer ', '');
-    const data: JwtPayload | any = JWT.verify(token, JWT_SECRET);
+    const data: JwtPayload | any = JWT.verify(token, secret || JWT_SECRET);
 
     if (!Object.keys(data).length) return false;
 
