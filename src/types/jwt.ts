@@ -4,5 +4,5 @@ export interface payload {
 
 export interface generate {
   payload: payload;
-  expiresIn: string;
+  expiresIn?: string;
 }
