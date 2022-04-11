@@ -6,9 +6,11 @@ const getEnv = () => {
   return {JWT_SECRET};
 };
 
-export const generate = (payload: jwt.generate) => {
+export const generate = ({payload, expiresIn}: jwt.generate) => {
   const {JWT_SECRET} = getEnv();
-  return JWT.sign({...payload, timestamp: Date.now()}, JWT_SECRET);
+  return JWT.sign({...payload, timestamp: Date.now()}, JWT_SECRET, {
+    expiresIn,
+  });
 };
 
 export const verify = async (token: string) => {
