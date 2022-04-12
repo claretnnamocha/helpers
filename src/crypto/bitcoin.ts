@@ -314,7 +314,7 @@ export const createBtcAddressFromXPubKey = ({
   const network = getBtcNetwork({testnet});
 
   const {address} = bitcoin.payments.p2pkh({
-    pubkey: bip32.fromBase58(xpub).derive(0).derive(index).publicKey,
+    pubkey: bip32.fromBase58(xpub, network).derive(0).derive(index).publicKey,
     network,
   });
 
