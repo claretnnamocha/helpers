@@ -1,9 +1,10 @@
 import assert from 'assert';
 import {describe, it} from 'mocha';
 import * as bitcoin from '../../src/crypto/bitcoin';
-import * as bip39 from 'bip39';
 
-const mnemonic = bip39.entropyToMnemonic('00000000000000000000000000000000');
+const mnemonic =
+  'wine agree vacuum crowd describe damp chapter' +
+  ' behind sweet tomato transfer earn';
 
 describe('--bitcoin--', () => {
   describe('Generate mnemonic', () => {
@@ -18,8 +19,8 @@ describe('--bitcoin--', () => {
       const xpub = await bitcoin.generateXPubKeyFromMnemonic({mnemonic});
       assert.equal(
           xpub,
-          'xpub661MyMwAqRbcFkPHucMnrGNzDwb6teAX1RbKQmqtEF8kK3Z7LZ59qafCjB' +
-          '9eCRLiTVG3uxBxgKvRgbubRhqSKXnGGb1aoaqLrpMBDrVxga8',
+          'xpub661MyMwAqRbcFqzMQsKoZo7Du8JrGrdNSTpMcLPjWzXLoqzMe' +
+          'iDos3dMundq4xjwKakHmbaTr5mG4QrDCg9vjDqWxMUVBzRbmU7RcGkzNcL',
       );
     });
 
@@ -27,8 +28,8 @@ describe('--bitcoin--', () => {
       const xprv = await bitcoin.generateXPrvKeyFromMnemonic({mnemonic});
       assert.equal(
           xprv,
-          'xprv9s21ZrQH143K3GJpoapnV8SFfukcVBSfeCficPSGfubmSFDxo1kuHnLisriDv' +
-          'SnRRuL2Qrg5ggqHKNVpxR86QEC8w35uxmGoggxtQTPvfUu',
+          'xprv9s21ZrQH143K3MutJqnoCfAVM6UMsPuX5Etkowz7xezMw3fD7AuZ' +
+          'KFJt4WGDyaxH9Y8htfaNtpRoo4zv373yTGkWoUaJQeybzRp4UGLcgn8',
       );
     });
   });
@@ -45,17 +46,17 @@ describe('--bitcoin--', () => {
         mnemonic,
         index: 0,
       });
-      assert.equal(address, '16ADswgGdUXTe1GYnrwB7BR3KbfPJcMCWD');
+      assert.equal(address, '1ETvwJrcxpiBhW1UgqkuhvZacdgNtqWmyj');
     });
 
     it('can genarate address from xpub key', async () => {
       const xpub = await bitcoin.generateXPubKeyFromMnemonic({mnemonic});
 
-      const {address} = bitcoin.createBtcAddressFromXPubKey({
-        xpub,
+      const {address} = bitcoin.createBtcAddressFromHDKey({
+        hdkey: xpub,
         index: 0,
       });
-      assert.equal(address, '13iX7DteNj1gV7zhe4t6o9FX9CArR5wZxz');
+      assert.equal(address, '1Mbz1bVJQj7Vwah7QF4fkpQ4wZD7jYKazz');
     });
   });
 
@@ -91,6 +92,28 @@ describe('--bitcoin--', () => {
     });
 
     it('can send BTC', async () => {
+      const {transactionId} = await bitcoin.send({
+        addresses: [address],
+        testnet: true,
+        wif,
+        amounts: [0.0000001],
+      });
+
+      assert.ok(transactionId);
+    });
+
+    it('can send BTC using index and HDKey (xprv)', async () => {
+      const xprv = await bitcoin.generateXPrvKeyFromMnemonic({
+        mnemonic,
+        testnet: true,
+      });
+
+      const {wif} = bitcoin.createBtcAddressFromHDKey({
+        hdkey: xprv,
+        index: 0,
+        testnet: true,
+      });
+
       const {transactionId} = await bitcoin.send({
         addresses: [address],
         testnet: true,

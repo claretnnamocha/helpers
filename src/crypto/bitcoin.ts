@@ -13,10 +13,8 @@ import {
   Wallet,
   ImportAddressFromMnemonic,
   MnemonicOnly,
-  AddressOnly,
   EntropyOnly,
-  CreateAddressFromXPub,
-  EstimateFeeWithHD,
+  CreateAddressFromHDKey,
   EstimateFee,
   Send,
   SendWithHD,
@@ -158,6 +156,7 @@ const sendBtc = async ({
   keyPair,
   testnet = false,
 }: SendBTC): Promise<TransactionReceipt> => {
+  fee = Math.ceil(fee * 1.02) | 0;
   let {satoshi: balance}: Amount = await getBtcBalance({
     address: sender,
     testnet,
@@ -166,6 +165,10 @@ const sendBtc = async ({
   amounts = amounts.map((amount) => parseBTC(amount));
 
   const total = amounts.reduce((a, b) => a + b, 0);
+
+  if (amounts.length !== addresses.length) {
+    throw new Error('Length of addresses and amounts do not match');
+  }
 
   if (total > balance) throw new Error('Insufficient balance');
 
@@ -306,19 +309,31 @@ export const createBtcAddressFromMnemonic = ({
   };
 };
 
-export const createBtcAddressFromXPubKey = ({
-  xpub,
+export const createBtcAddressFromHDKey = ({
+  hdkey,
   index,
   testnet = false,
-}: CreateAddressFromXPub): AddressOnly => {
+}: CreateAddressFromHDKey): Wallet => {
   const network = getBtcNetwork({testnet});
 
   const {address} = bitcoin.payments.p2pkh({
-    pubkey: bip32.fromBase58(xpub, network).derive(0).derive(index).publicKey,
+    pubkey: bip32.fromBase58(hdkey, network).derive(0).derive(index).publicKey,
     network,
   });
+  if (hdkey.includes('prv')) {
+    const root = bip32.fromBase58(hdkey, network);
 
-  return {address};
+    const path = `m/49'/1'/0'/0/${index}`;
+    const child = root.derivePath(path);
+
+    return {
+      address,
+      privateKey: child.privateKey.toString(),
+      wif: child.toWIF(),
+    };
+  } else {
+    return {address, privateKey: null, wif: null};
+  }
 };
 
 export const importBtcAddress = ({
@@ -377,33 +392,6 @@ export const estimateFee = async ({
   });
 };
 
-export const estimateFeeWithHDKeys = async ({
-  xprv,
-  xpub,
-  addresses,
-  amounts,
-  index,
-  testnet = false,
-}: EstimateFeeWithHD): Promise<Amount> => {
-  const network = getBtcNetwork({testnet});
-
-  const {address: sender}: AddressOnly = createBtcAddressFromXPubKey({
-    xpub,
-    index,
-    testnet,
-  });
-
-  const keyPair = ECPair.fromPrivateKey(Buffer.from(xprv), {network});
-
-  return await estimateBtcFee({
-    sender,
-    testnet,
-    amounts,
-    addresses,
-    keyPair,
-  });
-};
-
 export const send = async ({
   wif,
   addresses,
@@ -428,9 +416,8 @@ export const send = async ({
   return await sendBtc({addresses, amounts, fee, keyPair, testnet, sender});
 };
 
-export const sendWithHDKeys = async ({
+export const sendWithHDKey = async ({
   xprv,
-  xpub,
   addresses,
   amounts,
   index,
@@ -439,23 +426,16 @@ export const sendWithHDKeys = async ({
 }: SendWithHD): Promise<TransactionReceipt> => {
   const network = getBtcNetwork({testnet});
 
-  const {address: sender}: AddressOnly = createBtcAddressFromXPubKey({
-    xpub,
+  const {address: sender, wif}: Wallet = createBtcAddressFromHDKey({
+    hdkey: xprv,
     index,
     testnet,
   });
 
-  const keyPair = ECPair.fromPrivateKey(Buffer.from(xprv), {network});
+  const keyPair = ECPair.fromWIF(wif, network);
 
   if (!fee) {
-    const {satoshi} = await estimateFeeWithHDKeys({
-      xprv,
-      xpub,
-      addresses,
-      amounts,
-      index,
-      testnet,
-    });
+    const {satoshi} = await estimateFee({wif, addresses, amounts, testnet});
     fee = satoshi;
   }
 

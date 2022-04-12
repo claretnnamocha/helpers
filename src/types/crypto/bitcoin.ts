@@ -31,7 +31,6 @@ export interface Wallet {
 }
 
 export interface EstimateFeeWithHD {
-  xpub: string;
   index: number;
   xprv: string;
   testnet?: boolean;
@@ -100,8 +99,8 @@ export interface EntropyOnly {
   entropy: string;
 }
 
-export interface CreateAddressFromXPub {
-  xpub: string;
+export interface CreateAddressFromHDKey {
+  hdkey: string;
   index: number;
   testnet?: boolean;
 }
