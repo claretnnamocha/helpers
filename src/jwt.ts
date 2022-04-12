@@ -12,9 +12,12 @@ export const generate = ({
   expiresIn = null,
 }: jwt.generate) => {
   const {JWT_SECRET} = getEnv();
-  return JWT.sign({...payload, timestamp: Date.now()}, secret || JWT_SECRET, {
-    expiresIn,
-  });
+  const opts = expiresIn ? {expiresIn} : {};
+  return JWT.sign(
+      {...payload, timestamp: Date.now()},
+      secret || JWT_SECRET,
+      opts,
+  );
 };
 
 export const verify = async ({token, secret = null}: jwt.verify) => {
