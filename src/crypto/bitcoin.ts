@@ -48,6 +48,8 @@ const satoshiToBtc = (satoshi: number) => {
   return satoshi / Math.pow(10, 8);
 };
 
+const getPath = (index: number) => `m/49'/1'/0'/0/${index}`;
+
 const calculateTxFee = async ({testnet = false, tx}: CalculateTxFee) => {
   let fee: number;
 
@@ -334,7 +336,7 @@ export const createBtcAddressFromMnemonic = ({
   const seed = bip39.mnemonicToSeedSync(mnemonic);
   const root = bip32.fromSeed(seed, network);
 
-  const path = `m/49'/1'/0'/0/${index}`;
+  const path = getPath(index);
   const child = root.derivePath(path);
 
   const {address} = bitcoin.payments.p2pkh({
@@ -356,14 +358,14 @@ export const createBtcAddressFromHDKey = ({
 }: CreateAddressFromHDKey): Wallet => {
   const network = getBtcNetwork({testnet});
 
+  const path = getPath(index);
   const {address} = bitcoin.payments.p2pkh({
-    pubkey: bip32.fromBase58(hdkey, network).derive(0).derive(index).publicKey,
+    pubkey: bip32.fromBase58(hdkey, network).derivePath(path).publicKey,
     network,
   });
   if (hdkey.includes('prv')) {
     const root = bip32.fromBase58(hdkey, network);
 
-    const path = `m/49'/1'/0'/0/${index}`;
     const child = root.derivePath(path);
 
     return {
