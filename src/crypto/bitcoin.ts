@@ -207,6 +207,46 @@ const sendBtc = async ({
   return {transactionId: text};
 };
 
+const drainBtc = async ({
+  to,
+  minimumBalance,
+  sender,
+  keyPair,
+  testnet = false,
+}): Promise<TransactionReceipt> => {
+  const {satoshi: balance}: Amount = await getBtcBalance({
+    address: sender,
+    testnet,
+  });
+
+  if (balance < minimumBalance) throw new Error('Insufficient balance');
+
+  const utxos: Array<UTXO> = await getUtxos({address: sender, testnet});
+
+  const {psbt} = await gatherUtxos({utxos, testnet});
+
+  psbt.addOutput({address: to, value: 100});
+
+  psbt.signAllInputs(keyPair);
+  psbt.validateSignaturesOfAllInputs(validator);
+  psbt.finalizeAllInputs();
+
+  const tx = psbt.extractTransaction();
+  const body = tx.toHex();
+
+  const link = getBaseURL({testnet}) + '/tx';
+
+  const response = await fetch(link, {method: 'post', body});
+  const text = await response.text();
+
+  const hexRegex = /^(0x|0X)?[a-fA-F0-9]+$/;
+  const sent = hexRegex.test(text);
+
+  if (!sent) throw new Error(text);
+
+  return {transactionId: text};
+};
+
 const getBtcNetwork = ({testnet = false}: NetworkOnly) => {
   return testnet ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
 };
@@ -440,4 +480,42 @@ export const sendWithHDKey = async ({
   }
 
   return await sendBtc({addresses, amounts, fee, keyPair, testnet, sender});
+};
+
+export const drain = async ({
+  wif,
+  to,
+  minimumBalance = 225,
+  testnet = false,
+}): Promise<TransactionReceipt> => {
+  const network = getBtcNetwork({testnet});
+
+  const {address: sender}: Wallet = importBtcAddress({
+    wif,
+    testnet,
+  });
+
+  const keyPair = ECPair.fromWIF(wif, network);
+
+  return await drainBtc({minimumBalance, to, keyPair, testnet, sender});
+};
+
+export const drainWithHDKey = async ({
+  xprv,
+  to,
+  index,
+  minimumBalance = 225,
+  testnet = false,
+}): Promise<TransactionReceipt> => {
+  const network = getBtcNetwork({testnet});
+
+  const {address: sender, wif}: Wallet = createBtcAddressFromHDKey({
+    hdkey: xprv,
+    index,
+    testnet,
+  });
+
+  const keyPair = ECPair.fromWIF(wif, network);
+
+  return await drainBtc({to, keyPair, testnet, sender, minimumBalance});
 };
