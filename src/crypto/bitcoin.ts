@@ -227,7 +227,15 @@ const drainBtc = async ({
 
   const {psbt} = await gatherUtxos({utxos, testnet});
 
-  psbt.addOutput({address: to, value: balance});
+  const wif = keyPair.toWIF();
+  const {satoshi: fee} = await estimateFee({
+    wif,
+    addresses: [to],
+    amounts: [balance],
+    testnet,
+  });
+
+  psbt.addOutput({address: to, value: balance - fee});
 
   psbt.signAllInputs(keyPair);
   psbt.validateSignaturesOfAllInputs(validator);
