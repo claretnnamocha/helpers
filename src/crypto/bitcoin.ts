@@ -227,7 +227,7 @@ const drainBtc = async ({
 
   const {psbt} = await gatherUtxos({utxos, testnet});
 
-  psbt.addOutput({address: to, value: 100});
+  psbt.addOutput({address: to, value: balance});
 
   psbt.signAllInputs(keyPair);
   psbt.validateSignaturesOfAllInputs(validator);
