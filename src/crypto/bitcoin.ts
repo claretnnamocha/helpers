@@ -228,10 +228,11 @@ const drainBtc = async ({
   const {psbt} = await gatherUtxos({utxos, testnet});
 
   const wif = keyPair.toWIF();
+
   const {satoshi: fee} = await estimateFee({
     wif,
     addresses: [to],
-    amounts: [balance],
+    amounts: [satoshiToBtc(balance)],
     testnet,
   });
 
