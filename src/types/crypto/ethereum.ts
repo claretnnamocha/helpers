@@ -1,5 +1,6 @@
 type network =
   | 'mainnet'
+  | 'homestead'
   | 'ropsten'
   | 'kovan'
   | 'rinkeby'
@@ -21,9 +22,9 @@ export interface GetERC20Balance {
   decimals: number;
 }
 
-export interface GetTrxnHash {
+export interface GetTransaction {
   network?: network;
-  trxid: string;
+  hash: string;
 }
 
 export interface ImportAddress {

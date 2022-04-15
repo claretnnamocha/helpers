@@ -1,4 +1,7 @@
-import {JsonRpcProvider, TransactionReceipt} from '@ethersproject/providers';
+import {
+  JsonRpcProvider,
+  TransactionReceipt,
+} from '@ethersproject/providers';
 import * as ethers from 'ethers';
 import Web3 from 'web3';
 import {
@@ -13,6 +16,7 @@ import {
   SendEth,
   SendErc20,
   GetERC20Balance,
+  GetTransaction,
 } from '../types/crypto/ethereum';
 
 const IERC20_ABI = [
@@ -289,3 +293,22 @@ export const createEthAddressFromXPrv = ({
 
   return {address, privateKey};
 };
+
+export const getTransactionCount = async ({
+  network = 'mainnet',
+  address,
+}: GetBalance): Promise<number> => {
+  const provider: JsonRpcProvider = getProvider({network});
+
+  return await provider.getTransactionCount(address);
+};
+
+export const getTransactionReceipt = async ({
+  network = 'mainnet',
+  hash,
+}: GetTransaction): Promise<any> => {
+  const provider: JsonRpcProvider = getProvider({network});
+
+  return await provider.getTransactionReceipt(hash);
+};
+
