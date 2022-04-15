@@ -1,5 +1,4 @@
 type network =
-  | 'mainnet'
   | 'homestead'
   | 'ropsten'
   | 'kovan'

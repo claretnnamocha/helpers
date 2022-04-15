@@ -1,6 +1,8 @@
 import {
+  Block,
   JsonRpcProvider,
   TransactionReceipt,
+  TransactionResponse,
 } from '@ethersproject/providers';
 import * as ethers from 'ethers';
 import Web3 from 'web3';
@@ -35,14 +37,14 @@ const IERC20_ABI = [
     'to, uint256 amount) external returns (bool)',
 ];
 
-const getEthRpcLink = ({network = 'mainnet'}: Network): string => {
+const getEthRpcLink = ({network = 'homestead'}: Network): string => {
   const {INFURA_API_KEY} = process.env;
-
+  const subdomain = network === 'homestead' ? 'mainnet' : network;
   if (!INFURA_API_KEY) throw new Error('Please provide INFURA_API_KEY');
-  return `https://${network}.infura.io/v3/${INFURA_API_KEY}`;
+  return `https://${subdomain}.infura.io/v3/${INFURA_API_KEY}`;
 };
 
-const getProvider = ({network = 'mainnet'}: Network): JsonRpcProvider => {
+const getProvider = ({network = 'homestead'}: Network): JsonRpcProvider => {
   const link: string = getEthRpcLink({network});
   return new JsonRpcProvider(link);
 };
@@ -58,7 +60,7 @@ export const createEthAddress = (): Wallet => {
 
 export const importEthAddress = ({
   privateKey,
-  network = 'mainnet',
+  network = 'homestead',
 }: ImportAddress): Wallet => {
   const provider = getProvider({network});
   const {address} = new ethers.Wallet(privateKey, provider);
@@ -69,7 +71,7 @@ export const importEthAddress = ({
 export const estimateEthGasFee = async ({
   address,
   amount,
-  network = 'mainnet',
+  network = 'homestead',
   privateKey,
 }: SendEth): Promise<Amount> => {
   const to = Web3.utils.toChecksumAddress(address);
@@ -99,7 +101,7 @@ export const estimateERC20GasFee = async ({
   amount,
   privateKey,
   decimals,
-  network = 'mainnet',
+  network = 'homestead',
 }: SendErc20): Promise<Amount> => {
   const to = Web3.utils.toChecksumAddress(address);
   const value: ethers.BigNumber = ethers.utils.parseUnits(
@@ -150,7 +152,7 @@ export const estimateERC20GasFee = async ({
 export const sendEth = async ({
   address,
   amount,
-  network = 'mainnet',
+  network = 'homestead',
   privateKey,
 }: SendEth): Promise<TransactionReceipt> => {
   const to = Web3.utils.toChecksumAddress(address);
@@ -182,7 +184,7 @@ export const sendERC20Token = async ({
   amount,
   privateKey,
   decimals,
-  network = 'mainnet',
+  network = 'homestead',
 }: SendErc20): Promise<TransactionReceipt> => {
   const to = Web3.utils.toChecksumAddress(address);
   const value: ethers.BigNumber = ethers.utils.parseUnits(
@@ -231,7 +233,7 @@ export const sendERC20Token = async ({
 
 export const getEthBalance = async ({
   address,
-  network = 'mainnet',
+  network = 'homestead',
 }: GetBalance): Promise<Amount> => {
   const provider: JsonRpcProvider = getProvider({network});
   const balance = await provider.getBalance(address);
@@ -246,7 +248,7 @@ export const getERC20Balance = async ({
   address,
   contractAddress,
   decimals,
-  network = 'mainnet',
+  network = 'homestead',
 }: GetERC20Balance): Promise<Amount> => {
   const signer: JsonRpcProvider = getProvider({network});
 
@@ -295,7 +297,7 @@ export const createEthAddressFromXPrv = ({
 };
 
 export const getTransactionCount = async ({
-  network = 'mainnet',
+  network = 'homestead',
   address,
 }: GetBalance): Promise<number> => {
   const provider: JsonRpcProvider = getProvider({network});
@@ -304,11 +306,28 @@ export const getTransactionCount = async ({
 };
 
 export const getTransactionReceipt = async ({
-  network = 'mainnet',
+  network = 'homestead',
   hash,
-}: GetTransaction): Promise<any> => {
+}: GetTransaction): Promise<TransactionReceipt> => {
   const provider: JsonRpcProvider = getProvider({network});
 
   return await provider.getTransactionReceipt(hash);
 };
 
+export const sendTransaction = async ({
+  network = 'homestead',
+  hash,
+}: GetTransaction): Promise<TransactionResponse> => {
+  const provider: JsonRpcProvider = getProvider({network});
+
+  return await provider.sendTransaction(hash);
+};
+
+export const getBlock = async ({
+  network = 'homestead',
+  hash,
+}: GetTransaction): Promise<Block> => {
+  const provider: JsonRpcProvider = getProvider({network});
+
+  return await provider.getBlock(hash);
+};

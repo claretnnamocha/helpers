@@ -24,6 +24,7 @@ import {
   NetworkOnly,
   CalculateTxFee,
   GatherUTXOS,
+  SendTransaction,
 } from '../types/crypto/bitcoin';
 
 const ECPair = ecPairFactory(ecc);
@@ -491,6 +492,23 @@ export const sendWithHDKey = async ({
   }
 
   return await sendBtc({addresses, amounts, fee, keyPair, testnet, sender});
+};
+
+export const sendTransaction = async ({
+  hash: body,
+  testnet = false,
+}: SendTransaction): Promise<TransactionReceipt> => {
+  const link = getBaseURL({testnet}) + '/tx';
+
+  const response = await fetch(link, {method: 'post', body});
+  const text = await response.text();
+
+  const hexRegex = /^(0x|0X)?[a-fA-F0-9]+$/;
+  const sent = hexRegex.test(text);
+
+  if (!sent) throw new Error(text);
+
+  return {transactionId: text};
 };
 
 export const drain = async ({

@@ -76,6 +76,11 @@ export interface SendBTC {
   testnet?: boolean;
 }
 
+export interface SendTransaction {
+  hash: string;
+  testnet?: boolean;
+}
+
 export interface SendWithHD extends EstimateFeeWithHD {
   fee?: number;
 }
