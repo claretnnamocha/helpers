@@ -154,7 +154,7 @@ export const sendEth = async ({
   amount,
   network = 'homestead',
   privateKey,
-}: SendEth): Promise<TransactionReceipt> => {
+}: SendEth): Promise<TransactionResponse> => {
   const to = Web3.utils.toChecksumAddress(address);
   const eths: ethers.BigNumber = ethers.utils.parseEther(amount.toString());
 
@@ -174,8 +174,7 @@ export const sendEth = async ({
 
   const wallet = new ethers.Wallet(privateKey).connect(provider);
 
-  const tx = await wallet.sendTransaction(txObject);
-  return await tx.wait();
+  return wallet.sendTransaction(txObject);
 };
 
 export const sendERC20Token = async ({
@@ -185,7 +184,7 @@ export const sendERC20Token = async ({
   privateKey,
   decimals,
   network = 'homestead',
-}: SendErc20): Promise<TransactionReceipt> => {
+}: SendErc20): Promise<TransactionResponse> => {
   const to = Web3.utils.toChecksumAddress(address);
   const value: ethers.BigNumber = ethers.utils.parseUnits(
       amount.toString(),
@@ -227,8 +226,7 @@ export const sendERC20Token = async ({
 
   const wallet = new ethers.Wallet(privateKey, provider);
 
-  const tx = await wallet.sendTransaction(txObject);
-  return await tx.wait();
+  return wallet.sendTransaction(txObject);
 };
 
 export const getEthBalance = async ({

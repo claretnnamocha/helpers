@@ -77,18 +77,18 @@ describe('--ethereum--', () => {
     it('can get ETH balance', async () => {
       const balance = await ethereum.getEthBalance({
         address,
-        network: 'rinkeby',
+        network: 'ropsten',
       });
 
       assert.ok('ethers' in balance);
       assert.ok('wei' in balance);
     });
 
-    it('can get ERC20 token balance (USDT)', async () => {
+    it('can get ERC20 token balance (cUSDT)', async () => {
       const balance = await ethereum.getERC20Balance({
         address,
-        network: 'rinkeby',
-        contractAddress: '0xD9BA894E0097f8cC2BBc9D24D308b98e36dc6D02',
+        network: 'ropsten',
+        contractAddress: '0xF6958Cf3127e62d3EB26c79F4f45d3F3b2CcdeD4',
         decimals: 18,
       });
 
@@ -108,27 +108,27 @@ describe('--ethereum--', () => {
     const {address} = ethereum.createEthAddress();
 
     it('can send ETH', async () => {
-      const {transactionHash} = await ethereum.sendEth({
+      const {hash} = await ethereum.sendEth({
         address,
         amount: 0.000001,
         privateKey,
-        network: 'rinkeby',
+        network: 'ropsten',
       });
 
-      assert.ok(transactionHash);
+      assert.ok(hash);
     });
 
-    it('can send ERC20 token (USDT)', async () => {
-      const {transactionHash} = await ethereum.sendERC20Token({
+    it('can send ERC20 token (cUSDT)', async () => {
+      const {hash} = await ethereum.sendERC20Token({
         address,
         amount: 1,
         privateKey,
-        network: 'rinkeby',
-        contractAddress: '0xD9BA894E0097f8cC2BBc9D24D308b98e36dc6D02',
-        decimals: 18,
+        network: 'ropsten',
+        contractAddress: '0xF6958Cf3127e62d3EB26c79F4f45d3F3b2CcdeD4',
+        decimals: 8,
       });
 
-      assert.ok(transactionHash);
+      assert.ok(hash);
     });
   });
 });

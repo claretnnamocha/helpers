@@ -49,14 +49,14 @@ describe('--bitcoin--', () => {
       assert.equal(address, '1ETvwJrcxpiBhW1UgqkuhvZacdgNtqWmyj');
     });
 
-    it('can genarate address from xpub key', async () => {
-      const xpub = await bitcoin.generateXPubKeyFromMnemonic({mnemonic});
+    it('can genarate address from xpriv key', async () => {
+      const xprv = await bitcoin.generateXPrvKeyFromMnemonic({mnemonic});
 
       const {address} = bitcoin.createBtcAddressFromHDKey({
-        hdkey: xpub,
+        hdkey: xprv,
         index: 0,
       });
-      assert.equal(address, '1Mbz1bVJQj7Vwah7QF4fkpQ4wZD7jYKazz');
+      assert.equal(address, '1ETvwJrcxpiBhW1UgqkuhvZacdgNtqWmyj');
     });
   });
 
