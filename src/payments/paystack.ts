@@ -9,7 +9,7 @@ const request = async ({url, body = {}, method = 'get'}) => {
 
   try {
     let response: any = await fetch(`${baseURL}/${url}`, {
-      body: Object.keys(body).length ? JSON.stringify(body) : null,
+      body: Object.keys(body).length ? JSON.stringify(body) : undefined,
       method,
       headers: {
         'authorization': `Bearer ${PAYSTACK_SECRET_KEY}`,

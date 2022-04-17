@@ -300,7 +300,7 @@ export const getTransactionCount = async ({
 }: GetBalance): Promise<number> => {
   const provider: JsonRpcProvider = getProvider({network});
 
-  return await provider.getTransactionCount(address);
+  return provider.getTransactionCount(address);
 };
 
 export const getTransactionReceipt = async ({
@@ -309,7 +309,7 @@ export const getTransactionReceipt = async ({
 }: GetTransaction): Promise<TransactionReceipt> => {
   const provider: JsonRpcProvider = getProvider({network});
 
-  return await provider.getTransactionReceipt(hash);
+  return provider.getTransactionReceipt(hash);
 };
 
 export const sendTransaction = async ({
@@ -318,7 +318,7 @@ export const sendTransaction = async ({
 }: GetTransaction): Promise<TransactionResponse> => {
   const provider: JsonRpcProvider = getProvider({network});
 
-  return await provider.sendTransaction(hash);
+  return provider.sendTransaction(hash);
 };
 
 export const getBlock = async ({
@@ -327,5 +327,5 @@ export const getBlock = async ({
 }: GetTransaction): Promise<Block> => {
   const provider: JsonRpcProvider = getProvider({network});
 
-  return await provider.getBlock(hash);
+  return provider.getBlock(hash);
 };

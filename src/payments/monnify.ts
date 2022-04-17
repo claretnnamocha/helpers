@@ -39,7 +39,7 @@ const request = async ({url, body = {}, method = 'get'}) => {
           'authorization': `Bearer ${accessToken}`,
           'content-type': 'application/json',
         },
-        body: Object.keys(body).length ? JSON.stringify(body) : null,
+        body: Object.keys(body).length ? JSON.stringify(body) : undefined,
       });
 
       response = await response.json();
@@ -66,7 +66,7 @@ const request = async ({url, body = {}, method = 'get'}) => {
 export const reserveAccount = async ({name, email}) => {
   const {MONNIFY_CONTRACT_CODE} = process.env;
 
-  return await request({
+  return request({
     url: 'v2/bank-transfer/reserved-accounts',
     body: {
       accountReference: uuid(),
@@ -107,7 +107,7 @@ export const transfer = async ({
 }: payments.transfer) => {
   const {MONNIFY_WALLET_ACCOUNT_NUMBER} = process.env;
 
-  return await request({
+  return request({
     url: `v2/disbursements/single`,
     body: {
       amount,

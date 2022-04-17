@@ -640,7 +640,7 @@ export const verifyCustomer = async ({
   serviceId: service_id,
   variationId: variation_id = null,
 }) => {
-  return await request({
+  return request({
     url: 'verify-customer',
     body: {customer_id, service_id, variation_id},
   });

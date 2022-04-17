@@ -33,7 +33,7 @@ const request = async ({url, body = {}, method = 'get'}) => {
         'authorization': `InterswitchAuth ${access_token}`,
         'content-type': 'application/json',
       },
-      body: Object.keys(body).length ? JSON.stringify(body) : null,
+      body: Object.keys(body).length ? JSON.stringify(body) : undefined,
     });
 
     response = await response.json();
@@ -60,22 +60,22 @@ const request = async ({url, body = {}, method = 'get'}) => {
 };
 
 export const getCategories = async () => {
-  return await request({url: 'categorys'});
+  return request({url: 'categorys'});
 };
 
 export const getBillersInCategory = async ({id}) => {
-  return await request({url: `categorys/${id}/billers`});
+  return request({url: `categorys/${id}/billers`});
 };
 
 export const getBillerItems = async ({billerId}) => {
-  return await request({url: `billers/${billerId}/paymentitems`});
+  return request({url: `billers/${billerId}/paymentitems`});
 };
 
 export const verifyCustomer = async ({
   customerId,
   serviceId: paymentCode,
 }) => {
-  return await request({
+  return request({
     url: 'customers/validations',
     body: {customers: [{customerId, paymentCode}]},
   });

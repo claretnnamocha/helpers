@@ -148,7 +148,7 @@ const estimateBtcFee = async ({
 
   const tx = psbt.extractTransaction();
 
-  return await calculateTxFee({tx, testnet});
+  return calculateTxFee({tx, testnet});
 };
 
 const sendBtc = async ({
@@ -384,7 +384,7 @@ export const createBtcAddressFromHDKey = ({
       wif: child.toWIF(),
     };
   } else {
-    return {address, privateKey: null, wif: null};
+    return {address, privateKey: undefined, wif: undefined};
   }
 };
 
@@ -435,7 +435,7 @@ export const estimateFee = async ({
 
   const keyPair = ECPair.fromWIF(wif, network);
 
-  return await estimateBtcFee({
+  return estimateBtcFee({
     sender,
     testnet,
     amounts,
@@ -465,7 +465,7 @@ export const send = async ({
     fee = satoshi;
   }
 
-  return await sendBtc({addresses, amounts, fee, keyPair, testnet, sender});
+  return sendBtc({addresses, amounts, fee, keyPair, testnet, sender});
 };
 
 export const sendWithHDKey = async ({
@@ -491,7 +491,7 @@ export const sendWithHDKey = async ({
     fee = satoshi;
   }
 
-  return await sendBtc({addresses, amounts, fee, keyPair, testnet, sender});
+  return sendBtc({addresses, amounts, fee, keyPair, testnet, sender});
 };
 
 export const sendTransaction = async ({
@@ -526,7 +526,7 @@ export const drain = async ({
 
   const keyPair = ECPair.fromWIF(wif, network);
 
-  return await drainBtc({minimumBalance, to, keyPair, testnet, sender});
+  return drainBtc({minimumBalance, to, keyPair, testnet, sender});
 };
 
 export const drainWithHDKey = async ({
@@ -546,5 +546,5 @@ export const drainWithHDKey = async ({
 
   const keyPair = ECPair.fromWIF(wif, network);
 
-  return await drainBtc({to, keyPair, testnet, sender, minimumBalance});
+  return drainBtc({to, keyPair, testnet, sender, minimumBalance});
 };
