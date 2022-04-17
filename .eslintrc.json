@@ -10,6 +10,7 @@
   },
   "plugins": ["@typescript-eslint"],
   "rules": {
-    "camelcase": "off"
+    "camelcase": "off",
+    "max-len": [1, { "code": 80 }]
   }
 }

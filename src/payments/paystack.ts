@@ -29,13 +29,13 @@ const request = async ({url, body = {}, method = 'get'}) => {
 };
 
 export const getBanks = async () =>
-  await request({url: 'bank?country=nigeria&use_cursor=false'});
+  request({url: 'bank?country=nigeria' + '&use_cursor=false'});
 
 export const resolveBank = async ({
   account_number,
   bank_code,
 }: payments.resolveBank) =>
-  await request({
+  request({
     url: `bank/resolve?account_number=${account_number}&bank_code=${bank_code}`,
   });
 
@@ -100,7 +100,7 @@ export const handleWebhook = (params: payments.webhook) => {
 };
 
 export const resolveCardBin = async ({bin}: payments.resolveCardBin) =>
-  await request({
+  request({
     url: `decision/bin/${bin}`,
     method: 'get',
   });

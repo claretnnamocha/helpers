@@ -38,7 +38,7 @@ export const resolveBank = async ({
   account_number,
   bank_code: account_bank,
 }: payments.resolveBank) =>
-  await request({
+  request({
     url: `accounts/resolve`,
     body: {account_number, account_bank},
     method: 'post',
@@ -82,13 +82,21 @@ export const handleWebhook = (params: payments.webhook) => {
 };
 
 export const resolveBVN = async ({bvn}: payments.resolveBVN) =>
-  await request({
+  request({
     url: `kyc/bvns/${bvn}`,
     method: 'get',
   });
 
 export const resolveCardBin = async ({bin}: payments.resolveCardBin) =>
-  await request({
+  request({
     url: `card-bins/${bin}`,
+    method: 'get',
+  });
+
+export const fxRate = async ({amount, from, to}: payments.fxRate) =>
+  request({
+    url:
+      `transfers/rates?amount=${amount}&destination_currency=` +
+      `${to}&source_currency=${from}`,
     method: 'get',
   });

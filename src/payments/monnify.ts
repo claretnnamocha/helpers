@@ -81,23 +81,21 @@ export const reserveAccount = async ({name, email}) => {
   });
 };
 
-export const deallocateAccount = async ({reference}) =>
-  await request({
-    url: `v1/bank-transfer/reserved-accounts/reference/${reference}`,
-    method: 'delete',
-  });
+export const deallocateAccount = async ({reference}) => request({
+  url: `v1/bank-transfer/reserved-accounts/reference/${reference}`,
+  method: 'delete',
+});
 
 export const getBanks = async () => await request({url: 'v1/banks'});
 
 export const resolveBank = async ({
   account_number,
   bank_code,
-}: payments.resolveBank) =>
-  await request({
-    url:
+}: payments.resolveBank) => request({
+  url:
       `v1/disbursements/account/validate?accountNumber=${account_number}&` +
       `bankCode=${bank_code}`,
-  });
+});
 
 export const transfer = async ({
   account_number: destinationAccountNumber,

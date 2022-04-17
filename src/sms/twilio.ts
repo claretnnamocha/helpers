@@ -26,7 +26,8 @@ export const send = async ({
     body = body.join('&');
 
     const response = await fetch(
-        `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`,
+        `https://api.twilio.com/2010-04-01/Accounts/` +
+        `${TWILIO_ACCOUNT_SID}/Messages.json`,
         {
           method: 'post',
           body,

@@ -25,6 +25,12 @@ export interface resolveCardBin {
   bin: string;
 }
 
+export interface fxRate {
+  amount: number;
+  from: string;
+  to: string;
+}
+
 export interface transfer {
   account_number: number;
   name?: string;
