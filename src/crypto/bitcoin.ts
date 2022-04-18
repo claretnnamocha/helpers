@@ -548,3 +548,12 @@ export const drainWithHDKey = async ({
 
   return drainBtc({to, keyPair, testnet, sender, minimumBalance});
 };
+
+export const getBtcTransactions = async ({
+  address,
+  testnet = false,
+}: GetBalance): Promise<any> => {
+  const link = getBaseURL({testnet}) + `/address/${address}/txs`;
+  const response = await fetch(link);
+  return response.json();
+};
