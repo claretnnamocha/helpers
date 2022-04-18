@@ -1,4 +1,5 @@
 export * as gis from './src/gis';
+export * as crypto from './src/crypto';
 export * as jwt from './src/jwt';
 export * as jobs from './src/jobs';
 export * as mail from './src/mail';

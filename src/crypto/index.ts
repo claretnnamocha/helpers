@@ -1,2 +1,2 @@
 export * as bitcoin from './bitcoin';
-export * as ethers from './ethereum';
+export * as ethereum from './ethereum';
