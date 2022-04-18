@@ -41,14 +41,6 @@ const getBaseURL = ({testnet = false}: NetworkOnly) => {
     'https://blockstream.info/api';
 };
 
-const parseBTC = (btc: number) => {
-  return (btc * Math.pow(10, 8)) | 0;
-};
-
-const satoshiToBtc = (satoshi: number) => {
-  return satoshi / Math.pow(10, 8);
-};
-
 const getPath = (index: number) => `m/49'/1'/0'/0/${index}`;
 
 const calculateTxFee = async ({testnet = false, tx}: CalculateTxFee) => {
@@ -285,6 +277,14 @@ const getUtxosHash = async ({
   const data = await response.text();
 
   return data;
+};
+
+export const parseBTC = (btc: number) => {
+  return (btc * Math.pow(10, 8)) | 0;
+};
+
+export const satoshiToBtc = (satoshi: number) => {
+  return satoshi / Math.pow(10, 8);
 };
 
 export const generateMnemonic = () => {
