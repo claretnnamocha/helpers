@@ -329,3 +329,29 @@ export const getBlock = async ({
 
   return provider.getBlock(hash);
 };
+
+export const getBtcTransactions = async ({
+  address,
+  network = 'homestead',
+}: GetBalance): Promise<any> => {
+  const supportedNetworks = ['homestead', 'polygon', 'kovan', 'polygon-mumbai'];
+
+  const chains = {
+    'homestead': 1,
+    'polygon': 137,
+    'kovan': 69,
+    'polygon-mumbai': 80001,
+  };
+
+  if (!supportedNetworks.includes(network)) {
+    throw new Error(
+        `'network' must be ${supportedNetworks.join(',')}; got '${network}'`,
+    );
+  }
+
+  const link =
+    `https://api.covalenthq.com/v1/${chains[network]}/` +
+    `address/${address}/transactions_v2/`;
+  const response = await fetch(link);
+  return response.json();
+};
