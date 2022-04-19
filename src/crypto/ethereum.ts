@@ -343,7 +343,7 @@ export const getEthTransactions = async ({
   const chains = {
     'homestead': 1,
     'polygon': 137,
-    'kovan': 69,
+    'kovan': 42,
     'polygon-mumbai': 80001,
   };
 
