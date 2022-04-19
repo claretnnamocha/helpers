@@ -330,7 +330,7 @@ export const getBlock = async ({
   return provider.getBlock(hash);
 };
 
-export const getBtcTransactions = async ({
+export const getEthTransactions = async ({
   address,
   network = 'homestead',
 }: GetBalance): Promise<any> => {
