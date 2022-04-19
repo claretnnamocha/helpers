@@ -5,6 +5,7 @@ import {
   TransactionResponse,
 } from '@ethersproject/providers';
 import * as ethers from 'ethers';
+import fetch from 'node-fetch';
 import Web3 from 'web3';
 import {
   Amount,
