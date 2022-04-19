@@ -335,6 +335,9 @@ export const getEthTransactions = async ({
   address,
   network = 'homestead',
 }: GetBalance): Promise<any> => {
+  const {COVALENT_API_KEY} = process.env;
+  if (!COVALENT_API_KEY) throw new Error('Please provide COVALENT_API_KEY');
+
   const supportedNetworks = ['homestead', 'polygon', 'kovan', 'polygon-mumbai'];
 
   const chains = {
@@ -353,6 +356,13 @@ export const getEthTransactions = async ({
   const link =
     `https://api.covalenthq.com/v1/${chains[network]}/` +
     `address/${address}/transactions_v2/`;
-  const response = await fetch(link);
+  const response = await fetch(link, {
+    headers: {
+      'content-type': 'application/json',
+      'authorization': `Basic ${Buffer.from(COVALENT_API_KEY + ':').toString(
+          'base64',
+      )}`,
+    },
+  });
   return response.json();
 };
