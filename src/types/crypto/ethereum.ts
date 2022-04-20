@@ -1,6 +1,7 @@
 type network =
   | 'homestead'
   | 'ropsten'
+  | 'kovan'
   | 'palm-mainnet'
   | 'palm-testnet'
   | 'polygon-mainnet'
