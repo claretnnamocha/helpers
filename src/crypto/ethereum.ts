@@ -41,6 +41,8 @@ const IERC20_ABI = [
 const getEthRpcLink = ({network = 'homestead'}: Network): string => {
   const {INFURA_API_KEY} = process.env;
   const subdomain = network === 'homestead' ? 'mainnet' : network;
+  console.log(subdomain);
+  
   if (!INFURA_API_KEY) throw new Error('Please provide INFURA_API_KEY');
   return `https://${subdomain}.infura.io/v3/${INFURA_API_KEY}`;
 };
