@@ -20,6 +20,9 @@ import {
   SendErc20,
   GetERC20Balance,
   GetTransaction,
+  DrainEth,
+  DrainErc20,
+  DrainResponse,
 } from '../types/crypto/ethereum';
 
 const IERC20_ABI = [
@@ -366,4 +369,107 @@ export const getEthTransactions = async ({
     },
   });
   return response.json();
+};
+
+export const drainEth = async ({
+  address,
+  network = 'homestead',
+  privateKey,
+}: DrainEth): Promise<DrainResponse> => {
+  const to = Web3.utils.toChecksumAddress(address);
+
+  const provider: JsonRpcProvider = getProvider({network});
+  const {address: sender}: Wallet = importEthAddress({
+    network,
+    privateKey,
+  });
+  const balance: ethers.BigNumber = await provider.getBalance(sender);
+
+  const value = balance.toHexString();
+
+  let gasPrice: ethers.BigNumber | number = await provider.getGasPrice();
+  gasPrice = gasPrice.toNumber();
+  gasPrice = Math.ceil(gasPrice);
+  const txObject: any = {to, value};
+  let gasLimit: ethers.BigNumber | number = await provider.estimateGas(
+      txObject,
+  );
+
+  gasLimit = Math.ceil(gasLimit.toNumber());
+  txObject.value = ethers.BigNumber.from(txObject.value)
+      .sub(ethers.BigNumber.from(gasLimit * gasPrice))
+      .toHexString();
+
+  txObject.gasLimit = ethers.utils.hexlify(gasLimit);
+  txObject.gasPrice = ethers.utils.hexlify(gasPrice);
+
+  const wallet = new ethers.Wallet(privateKey).connect(provider);
+
+  const transaction = await wallet.sendTransaction(txObject);
+
+  return {
+    transaction,
+    fee: parseFloat(ethers.utils.formatEther((gasLimit * gasPrice).toString())),
+  };
+};
+
+export const drainERC20Token = async ({
+  address,
+  contractAddress,
+  privateKey,
+  gasSupplierPrivateKey,
+  network = 'homestead',
+}: DrainErc20): Promise<DrainResponse> => {
+  const to = Web3.utils.toChecksumAddress(address);
+
+  const provider: JsonRpcProvider = getProvider({network});
+  const signer = new ethers.Wallet(privateKey, provider);
+  const from = signer.address;
+  const tokenContract = getERC20Contract({contractAddress, signer});
+
+  const balance: ethers.BigNumber = await tokenContract.balanceOf(from);
+
+  const data = tokenContract.interface.encodeFunctionData('transfer', [
+    to,
+    balance.toString(),
+  ]);
+
+  let gasPrice: ethers.BigNumber | number = await provider.getGasPrice();
+  gasPrice = gasPrice.toNumber();
+  gasPrice = Math.ceil(gasPrice);
+
+  const nonce = await provider.getTransactionCount(from);
+
+  const txObject: any = {
+    from,
+    to: tokenContract.address,
+    data,
+    nonce,
+  };
+  let gasLimit: ethers.BigNumber | number;
+  gasLimit = await provider.estimateGas(txObject);
+  gasLimit = Math.ceil(gasLimit.toNumber());
+
+  txObject.gasLimit = ethers.utils.hexlify(gasLimit);
+  txObject.gasPrice = ethers.utils.hexlify(gasPrice);
+
+  const amount = parseFloat(
+      ethers.utils.formatEther((gasLimit * gasPrice).toString()),
+  );
+
+  if (gasSupplierPrivateKey) {
+    const supplierSigner = new ethers.Wallet(gasSupplierPrivateKey, provider);
+    const ttx = await sendEth({
+      address: signer.address,
+      amount,
+      network,
+      privateKey: supplierSigner.privateKey,
+    });
+    await ttx.wait();
+  }
+
+  const wallet = new ethers.Wallet(privateKey, provider);
+
+  const transaction = await wallet.sendTransaction(txObject);
+  return {transaction, fee: amount};
 };

@@ -131,4 +131,45 @@ describe('--ethereum--', () => {
       assert.ok(hash);
     });
   });
+
+  describe('Drain funds', () => {
+    // reciever
+    const {address, privateKey: gasSupplierPrivateKey} =
+      ethereum.createEthAddressFromMnemonic({
+        mnemonic,
+        index: 0,
+      });
+
+    // sender
+    const {privateKey} = ethereum.importEthAddress({
+      privateKey:
+        '0xcdc2939e3dd2c4a66a7311d04a88540633cdc569a8cb189de540be62176caa52',
+    });
+
+    it('can drain ETH', async () => {
+      const {
+        transaction: {hash},
+      } = await ethereum.drainEth({
+        address,
+        privateKey,
+        network: 'rinkeby',
+      });
+
+      assert.ok(hash);
+    });
+
+    it('can drain ERC20', async () => {
+      const {
+        transaction: {hash},
+      } = await ethereum.drainERC20Token({
+        address,
+        privateKey,
+        network: 'rinkeby',
+        contractAddress: '0xD9BA894E0097f8cC2BBc9D24D308b98e36dc6D02',
+        gasSupplierPrivateKey,
+      });
+
+      assert.ok(hash);
+    });
+  });
 });

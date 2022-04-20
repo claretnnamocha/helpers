@@ -1,5 +1,8 @@
+import {TransactionResponse} from '@ethersproject/providers';
+
 type network =
   | 'homestead'
+  | 'rinkeby'
   | 'ropsten'
   | 'kovan'
   | 'palm-mainnet'
@@ -74,4 +77,23 @@ export interface ImportAddressFromXPrv {
 
 export interface MnemonicOnly {
   mnemonic: string;
+}
+
+export interface DrainEth {
+  network?: network;
+  address: string;
+  privateKey: string;
+}
+
+export interface DrainErc20 {
+  network?: network;
+  address: string;
+  contractAddress: string;
+  privateKey: string;
+  gasSupplierPrivateKey?: string;
+}
+
+export interface DrainResponse {
+  transaction?: TransactionResponse;
+  fee?: number;
 }
