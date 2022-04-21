@@ -21,6 +21,7 @@
     "@types/nodemailer": "^6.4.4",
     "@types/uuid": "^8.3.3",
     "aws-sdk": "^2.1050.0",
+    "bignumber.js": "^9.0.2",
     "bip32": "^3.0.1",
     "bip39": "^3.0.4",
     "bitcoinjs-lib": "^6.0.1",

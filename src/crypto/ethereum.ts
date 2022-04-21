@@ -1,3 +1,4 @@
+import {BigNumber} from 'bignumber.js';
 import {
   Block,
   JsonRpcProvider,
@@ -191,10 +192,13 @@ export const sendERC20Token = async ({
   network = 'homestead',
 }: SendErc20): Promise<TransactionResponse> => {
   const to = Web3.utils.toChecksumAddress(address);
-  const value: ethers.BigNumber = ethers.utils.parseUnits(
-      amount.toString(),
-      decimals,
+  const value: ethers.BigNumber = ethers.BigNumber.from(
+      new BigNumber(
+          new BigNumber(amount).multipliedBy(new BigNumber(Math.pow(10, decimals))),
+      ).toString(),
   );
+
+  console.log(value.toString());
 
   const provider: JsonRpcProvider = getProvider({network});
   const signer = new ethers.Wallet(privateKey, provider);
@@ -207,7 +211,7 @@ export const sendERC20Token = async ({
 
   const data = tokenContract.interface.encodeFunctionData('transfer', [
     to,
-    amount,
+    value,
   ]);
 
   let gasPrice: ethers.BigNumber | number = await provider.getGasPrice();
@@ -396,9 +400,11 @@ export const drainEth = async ({
   );
 
   gasLimit = Math.ceil(gasLimit.toNumber());
-  txObject.value = ethers.BigNumber.from(txObject.value)
-      .sub(ethers.BigNumber.from(gasLimit * gasPrice))
-      .toHexString();
+  txObject.value = ethers.BigNumber.from(
+      new BigNumber(txObject.value)
+          .minus(new BigNumber(gasLimit * gasPrice))
+          .toString(),
+  ).toHexString();
 
   txObject.gasLimit = ethers.utils.hexlify(gasLimit);
   txObject.gasPrice = ethers.utils.hexlify(gasPrice);
