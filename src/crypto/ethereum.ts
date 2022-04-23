@@ -193,12 +193,10 @@ export const sendERC20Token = async ({
 }: SendErc20): Promise<TransactionResponse> => {
   const to = Web3.utils.toChecksumAddress(address);
   const value: ethers.BigNumber = ethers.BigNumber.from(
-      new BigNumber(
-          new BigNumber(amount).multipliedBy(new BigNumber(Math.pow(10, decimals))),
-      ).toString(),
+      new BigNumber(amount)
+          .multipliedBy(new BigNumber(Math.pow(10, decimals)))
+          .toString(),
   );
-
-  console.log(value.toString());
 
   const provider: JsonRpcProvider = getProvider({network});
   const signer = new ethers.Wallet(privateKey, provider);
