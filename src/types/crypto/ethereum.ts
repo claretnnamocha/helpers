@@ -8,7 +8,9 @@ type network =
   | 'palm-mainnet'
   | 'palm-testnet'
   | 'polygon-mainnet'
-  | 'polygon-mumbai';
+  | 'polygon-mumbai'
+  | 'bsc'
+  | 'bsc-testnet';
 
 export interface GetBalance {
   network?: network;
