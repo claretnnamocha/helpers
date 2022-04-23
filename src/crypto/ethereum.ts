@@ -67,6 +67,7 @@ const getProvider = ({network = 'homestead'}: Network): JsonRpcProvider => {
 };
 
 const getERC20Contract = ({contractAddress, signer}) => {
+  contractAddress = Web3.utils.toChecksumAddress(contractAddress);
   return new ethers.Contract(contractAddress, IERC20_ABI, signer);
 };
 
