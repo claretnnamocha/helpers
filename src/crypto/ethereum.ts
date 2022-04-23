@@ -350,14 +350,14 @@ export const getEthTransactions = async ({
   const {COVALENT_API_KEY} = process.env;
   if (!COVALENT_API_KEY) throw new Error('Please provide COVALENT_API_KEY');
 
-  const supportedNetworks = ['homestead', 'polygon', 'kovan', 'polygon-mumbai'];
-
-  const chains = {
-    'homestead': 1,
-    'polygon': 137,
-    'kovan': 42,
-    'polygon-mumbai': 80001,
-  };
+  const supportedNetworks = [
+    'kovan',
+    'polygon-mumbai',
+    'bsc-testnet',
+    'homestead',
+    'polygon',
+    'bsc',
+  ];
 
   if (!supportedNetworks.includes(network)) {
     throw new Error(
@@ -365,8 +365,11 @@ export const getEthTransactions = async ({
     );
   }
 
+  const provider = getProvider({network});
+  const {chainId} = await provider.getNetwork();
+
   const link =
-    `https://api.covalenthq.com/v1/${chains[network]}/` +
+    `https://api.covalenthq.com/v1/${chainId}/` +
     `address/${address}/transactions_v2/`;
   const response = await fetch(link, {
     headers: {
