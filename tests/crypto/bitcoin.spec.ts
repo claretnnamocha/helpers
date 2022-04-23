@@ -8,9 +8,9 @@ const mnemonic =
 
 describe('--bitcoin--', () => {
   describe('Generate mnemonic', () => {
-    it('can generate mnemonic', async () => {
+    it('can generate a 24 word mnemonic', async () => {
       const mnemonic = bitcoin.generateMnemonic();
-      assert.ok(mnemonic);
+      assert.equal(mnemonic.split(' ').length, 24);
     });
   });
 
@@ -46,7 +46,7 @@ describe('--bitcoin--', () => {
         mnemonic,
         index: 0,
       });
-      assert.equal(address, '1ETvwJrcxpiBhW1UgqkuhvZacdgNtqWmyj');
+      assert.equal(address, 'bc1qjwchj4enqfgle8qxghf5re955q3lp0j8pw74x4');
     });
 
     it('can genarate address from xpriv key', async () => {
@@ -56,7 +56,7 @@ describe('--bitcoin--', () => {
         hdkey: xprv,
         index: 0,
       });
-      assert.equal(address, '1ETvwJrcxpiBhW1UgqkuhvZacdgNtqWmyj');
+      assert.equal(address, 'bc1qjwchj4enqfgle8qxghf5re955q3lp0j8pw74x4');
     });
   });
 
@@ -66,7 +66,7 @@ describe('--bitcoin--', () => {
         wif: 'L4ASqnxELDiAMf9aXSk6dexV199fZdnnriwAFkt2FKisaCBcVFCH',
       });
 
-      assert.equal(address, '17ncisdNHXF4ApAojAESYz6vUayUwzZ3qL');
+      assert.equal(address, 'bc1qffc54jeyr7g4k859d9v8jdt0crsrtaskm5675f');
     });
   });
 
