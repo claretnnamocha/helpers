@@ -49,7 +49,12 @@ const getEthRpcLink = ({network = 'homestead'}: Network): string => {
       'https://data-seed-prebsc-1-s1.binance.org:8545';
   } else {
     const {INFURA_API_KEY} = process.env;
-    const subdomain = network === 'homestead' ? 'mainnet' : network;
+    const subdomain =
+      network === 'polygon' ?
+        'polygon-mainnet' :
+        'homestead' ?
+        'mainnet' :
+        network;
 
     if (!INFURA_API_KEY) throw new Error('Please provide INFURA_API_KEY');
     return `https://${subdomain}.infura.io/v3/${INFURA_API_KEY}`;

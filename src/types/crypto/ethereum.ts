@@ -5,9 +5,7 @@ type network =
   | 'rinkeby'
   | 'ropsten'
   | 'kovan'
-  | 'palm-mainnet'
-  | 'palm-testnet'
-  | 'polygon-mainnet'
+  | 'polygon'
   | 'polygon-mumbai'
   | 'bsc'
   | 'bsc-testnet';
