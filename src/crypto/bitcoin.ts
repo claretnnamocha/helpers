@@ -288,7 +288,7 @@ export const satoshiToBtc = (satoshi: number) => {
 };
 
 export const generateMnemonic = () => {
-  return bip39.generateMnemonic();
+  return bip39.generateMnemonic(256);
 };
 
 export const mnemonicToEntropy = ({mnemonic}: MnemonicOnly) => {
@@ -326,7 +326,7 @@ export const createBtcAddress = ({
 }: CreateAddress): Wallet => {
   const network = getBtcNetwork({testnet});
   const keyPair = ECPair.makeRandom({network});
-  const {address} = bitcoin.payments.p2pkh({
+  const {address} = bitcoin.payments.p2wpkh({
     pubkey: keyPair.publicKey,
     network,
   });
@@ -349,7 +349,7 @@ export const createBtcAddressFromMnemonic = ({
   const path = getPath(index);
   const child = root.derivePath(path);
 
-  const {address} = bitcoin.payments.p2pkh({
+  const {address} = bitcoin.payments.p2wpkh({
     pubkey: child.publicKey,
     network,
   });
@@ -369,7 +369,7 @@ export const createBtcAddressFromHDKey = ({
   const network = getBtcNetwork({testnet});
 
   const path = getPath(index);
-  const {address} = bitcoin.payments.p2pkh({
+  const {address} = bitcoin.payments.p2wpkh({
     pubkey: bip32.fromBase58(hdkey, network).derivePath(path).publicKey,
     network,
   });
@@ -395,7 +395,7 @@ export const importBtcAddress = ({
   const network = getBtcNetwork({testnet});
 
   const keyPair = ECPair.fromWIF(wif, network);
-  const {address} = bitcoin.payments.p2pkh({
+  const {address} = bitcoin.payments.p2wpkh({
     pubkey: keyPair.publicKey,
     network,
   });
