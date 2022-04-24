@@ -52,7 +52,7 @@ const getEthRpcLink = ({network = 'homestead'}: Network): string => {
     const subdomain =
       network === 'polygon' ?
         'polygon-mainnet' :
-        'homestead' ?
+        network === 'homestead' ?
         'mainnet' :
         network;
 
