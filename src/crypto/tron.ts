@@ -1,67 +1,76 @@
-import tron from "@cobo/tron";
-import fetch from "node-fetch";
-import fs from "fs";
-import { config } from "dotenv";
-import BigNumber from "bignumber.js";
+import tron from '@cobo/tron';
+import fetch from 'node-fetch';
+import BigNumber from 'bignumber.js';
+import {
+  ImportAddress,
+  ImportAddressFromMnemonic,
+  ImportAddressFromHDKey,
+  GetBalance,
+  SendTrx,
+  SendTrc20,
+  Wallet,
+  Amount,
+  Network,
+} from '../types/crypto/tron';
 
 const getPath = (index: number) => `m/49'/194'/0'/0/${index}`;
 
-const getTronGridLink = ({ network = "mainnet" }): string => {
-  const { TRONGRID_API_KEY } = process.env;
+const getTronGridLink = ({network = 'mainnet'}): string => {
+  const {TRONGRID_API_KEY} = process.env;
   const subdomain =
-    network === "shasta"
-      ? "api.shasta"
-      : network === "mainnet"
-      ? "api"
-      : network;
+    network === 'shasta' ?
+      'api.shasta' :
+      network === 'mainnet' ?
+      'api' :
+      network;
 
-  if (!TRONGRID_API_KEY) throw new Error("Please provide TRONGRID_API_KEY");
+  if (!TRONGRID_API_KEY) throw new Error('Please provide TRONGRID_API_KEY');
   return `https://${subdomain}.trongrid.io`;
 };
 
 const requestTronGrid = async ({
   network,
   url,
-  method = "get",
+  method = 'get',
   body = null,
 }) => {
-  const { TRONGRID_API_KEY } = process.env;
-  const baseUrl = getTronGridLink({ network });
+  const {TRONGRID_API_KEY} = process.env;
+  const baseUrl = getTronGridLink({network});
   const link = `${baseUrl}/${url}`;
   body = body ? JSON.stringify(body) : null;
   const response = await fetch(link, {
     method,
     body,
     headers: {
-      "content-type": "application/json",
-      "TRON-PRO-API-KEY": TRONGRID_API_KEY,
+      'content-type': 'application/json',
+      'TRON-PRO-API-KEY': TRONGRID_API_KEY,
     },
   });
 
   return response.json();
 };
 
-const getLatestBlock = async ({ network = "mainnet" }) => {
+const getLatestBlock = async ({network = 'mainnet'}: Network ) => {
   const {
     blockID: hash,
     block_header: {
-      raw_data: { timestamp, number },
+      raw_data: {timestamp, number},
     },
   } = await requestTronGrid({
-    url: "wallet/getnowblock",
+    url: 'wallet/getnowblock',
     network,
   });
 
-  return { hash, timestamp, number };
+  return {hash, timestamp, number};
 };
 
-const broadcastTransaction = async ({ network = "mainnet", transaction }) => {
-  const { hex } = transaction;
+const broadcastTransaction = async ({network = 'mainnet', transaction}) => {
+  const {hex} = transaction;
   return requestTronGrid({
-    url: "wallet/broadcasthex",
-    method: "post",
+    url: 'wallet/broadcasthex',
+    method: 'post',
     network,
-    body: { transaction: hex },
+    body: {transaction: hex},
   });
 };
 
@@ -73,7 +82,7 @@ export const sunToTrx = (sun: number) => {
   return sun / Math.pow(10, 6);
 };
 
-export const createTrxAddress = () => {
+export const createTrxAddress = (): Wallet => {
   const mnemonic = tron.generateMnemonic();
   const wallet = tron.fromMnemonic(mnemonic).derivePath(getPath(0));
   return {
@@ -82,7 +91,7 @@ export const createTrxAddress = () => {
   };
 };
 
-export const importTrxAddress = ({ privateKey }) => {
+export const importTrxAddress = ({privateKey}: ImportAddress): Wallet => {
   const wallet = tron.fromTronPrivateKey(privateKey);
   return {
     address: wallet.getAddress(),
@@ -90,7 +99,10 @@ export const importTrxAddress = ({ privateKey }) => {
   };
 };
 
-export const createTrxAddressFromMnemonic = ({ mnemonic, index }) => {
+export const createTrxAddressFromMnemonic = ({
+  mnemonic,
+  index,
+}: ImportAddressFromMnemonic): Wallet => {
   const wallet = tron.fromMnemonic(mnemonic).derivePath(getPath(index));
   return {
     address: wallet.getAddress(),
@@ -98,7 +110,10 @@ export const createTrxAddressFromMnemonic = ({ mnemonic, index }) => {
   };
 };
 
-export const createTrxAddressFromHDKey = ({ hdkey, index }) => {
+export const createTrxAddressFromHDKey = ({
+  hdkey,
+  index,
+}: ImportAddressFromHDKey): Wallet => {
   const wallet = tron.fromExtendedKey(hdkey).derivePath(getPath(index));
   return {
     address: wallet.getAddress(),
@@ -106,37 +121,40 @@ export const createTrxAddressFromHDKey = ({ hdkey, index }) => {
   };
 };
 
-export const getTrxBalance = async ({ address, network = "mainnet" }) => {
-  const { data }: any = await requestTronGrid({
+export const getTrxBalance = async ({
+  address,
+  network = 'mainnet',
+}: GetBalance): Promise<Amount> => {
+  const {data}: any = await requestTronGrid({
     network,
     url: `v1/accounts/${address}`,
   });
 
-  if (!data.length) return { sun: 0, trx: 0 };
+  if (!data.length) return {sun: 0, trx: 0};
 
-  const [{ balance: sun }] = data;
+  const [{balance: sun}] = data;
 
   const trx = sunToTrx(sun);
 
-  return { sun, trx };
+  return {sun, trx};
 };
 
 export const getTRC20Balance = async ({
   address,
   contractAddress,
   decimals,
-  network = "mainnet",
-}) => {
-  const { data }: any = await requestTronGrid({
+  network = 'mainnet',
+}): Promise<Amount> => {
+  const {data}: any = await requestTronGrid({
     network,
     url: `v1/accounts/${address}`,
   });
 
-  if (!data.length) return { sun: 0, trx: 0 };
+  if (!data.length) return {sun: 0, trx: 0};
 
-  const [{ trc20 }] = data;
+  const [{trc20}] = data;
 
-  if (!trc20.length) return { sun: 0, trx: 0 };
+  if (!trc20.length) return {sun: 0, trx: 0};
 
   for (let index = 0; index < trc20.length; index++) {
     const token = trc20[index];
@@ -145,39 +163,40 @@ export const getTRC20Balance = async ({
     if (tokenContractAddress === contractAddress) {
       const sun: number = parseInt(token[tokenContractAddress]);
       const trx = sun / Math.pow(10, decimals);
-      return { sun, trx };
+      return {sun, trx};
     }
   }
-  return { sun: 0, trx: 0 };
+  return {sun: 0, trx: 0};
 };
 
 export const sendTrx = async ({
   privateKey,
   address: to,
   amount: trx,
-  network = "mainnet",
-}) => {
+  network = 'mainnet',
+}: SendTrx) => {
   const wallet = tron.fromTronPrivateKey(privateKey);
   const address = wallet.getAddress();
   const amount = parseTrx(trx);
-  const latestBlock = await getLatestBlock({ network });
+  const latestBlock = await getLatestBlock({network});
 
-  const { sun: balance } = await getTrxBalance({
+  const {sun: balance} = await getTrxBalance({
     address,
     network,
   });
 
-  if (new BigNumber(amount).gte(new BigNumber(balance)))
-    throw new Error("Insufficient balance");
+  if (new BigNumber(amount).gte(new BigNumber(balance))) {
+    throw new Error('Insufficient balance');
+  }
 
   const transaction = wallet.generateTransaction(
-    to,
-    amount,
-    "TRX",
-    latestBlock
+      to,
+      amount,
+      'TRX',
+      latestBlock,
   );
 
-  return broadcastTransaction({ network, transaction });
+  return broadcastTransaction({network, transaction});
 };
 
 export const sendTRC20Token = async ({
@@ -186,37 +205,41 @@ export const sendTRC20Token = async ({
   amount: trx,
   privateKey,
   decimals,
-  network = "mainnet",
-}) => {
+  network = 'mainnet',
+}: SendTrc20) => {
   const wallet = tron.fromTronPrivateKey(privateKey);
   const address = wallet.getAddress();
   const amount = trx * Math.pow(10, decimals);
-  const latestBlock = await getLatestBlock({ network });
+  const latestBlock = await getLatestBlock({network});
 
-  const { sun: balance } = await getTRC20Balance({
+  const {sun: balance} = await getTRC20Balance({
     address,
     network,
     contractAddress,
     decimals,
   });
 
-  if (new BigNumber(amount).gte(new BigNumber(balance)))
-    throw new Error("Insufficient balance");
+  if (new BigNumber(amount).gte(new BigNumber(balance))) {
+    throw new Error('Insufficient balance');
+  }
 
   const transaction = wallet.transferTRC20Token(
-    contractAddress,
-    to,
-    amount,
-    latestBlock
+      contractAddress,
+      to,
+      amount,
+      latestBlock,
   );
 
-  return broadcastTransaction({ network, transaction });
+  return broadcastTransaction({network, transaction});
 };
 
-export const getTrxTransactions = async ({ address, network = "mainnet" }) => {
+export const getTrxTransactions = async ({
+  address,
+  network = 'mainnet',
+}: GetBalance): Promise<Array<any>> => {
   const url = `v1/accounts/${address}/transactions`;
 
-  const { data, success, error } = await requestTronGrid({
+  const {data, success, error} = await requestTronGrid({
     url,
     network,
   });
@@ -228,11 +251,11 @@ export const getTrxTransactions = async ({ address, network = "mainnet" }) => {
 
 export const getTrc20Transactions = async ({
   address,
-  network = "mainnet",
-}) => {
+  network = 'mainnet',
+}: GetBalance): Promise<Array<any>> => {
   const url = `/v1/accounts/${address}/transactions/trc20`;
 
-  const { data, success, error } = await requestTronGrid({
+  const {data, success, error} = await requestTronGrid({
     url,
     network,
   });

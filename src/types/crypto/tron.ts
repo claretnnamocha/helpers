@@ -1,12 +1,5 @@
-import {TransactionResponse} from '@ethersproject/providers';
 
-type network =
-  | 'homestead'
-  | 'kovan'
-  | 'polygon'
-  | 'polygon-mumbai'
-  | 'bsc'
-  | 'bsc-testnet';
+type network = 'mainnet' | 'shasta' | 'nile';
 
 export interface GetBalance {
   network?: network;
@@ -27,8 +20,8 @@ export interface GetTransaction {
 
 export interface ImportAddress {
   privateKey: string;
-  network?: network;
 }
+
 export interface Network {
   network?: network;
 }
@@ -38,8 +31,8 @@ export interface Transaction {
 }
 
 export interface Amount {
-  wei: number;
-  ethers: number;
+  sun: number;
+  trx: number;
 }
 
 export interface Wallet {
@@ -47,14 +40,14 @@ export interface Wallet {
   privateKey: string;
 }
 
-export interface SendEth {
+export interface SendTrx {
   network?: network;
   amount: number;
   address: string;
   privateKey: string;
 }
 
-export interface SendErc20 {
+export interface SendTrc20 {
   network?: network;
   amount: number;
   decimals: number;
@@ -68,30 +61,11 @@ export interface ImportAddressFromMnemonic {
   index: number;
 }
 
-export interface ImportAddressFromXPrv {
-  xprv: string;
+export interface ImportAddressFromHDKey {
+  hdkey: string;
   index: number;
 }
 
 export interface MnemonicOnly {
   mnemonic: string;
-}
-
-export interface DrainEth {
-  network?: network;
-  address: string;
-  privateKey: string;
-}
-
-export interface DrainErc20 {
-  network?: network;
-  address: string;
-  contractAddress: string;
-  privateKey: string;
-  gasSupplierPrivateKey?: string;
-}
-
-export interface DrainResponse {
-  transaction?: TransactionResponse;
-  fee?: number;
 }

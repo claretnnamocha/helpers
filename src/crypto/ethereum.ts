@@ -356,21 +356,6 @@ export const getEthTransactions = async ({
   const {COVALENT_API_KEY} = process.env;
   if (!COVALENT_API_KEY) throw new Error('Please provide COVALENT_API_KEY');
 
-  const supportedNetworks = [
-    'kovan',
-    'polygon-mumbai',
-    'bsc-testnet',
-    'homestead',
-    'polygon',
-    'bsc',
-  ];
-
-  if (!supportedNetworks.includes(network)) {
-    throw new Error(
-        `'network' must be ${supportedNetworks.join(',')}; got '${network}'`,
-    );
-  }
-
   const provider = getProvider({network});
   const {chainId} = await provider.getNetwork();
 
