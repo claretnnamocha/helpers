@@ -254,7 +254,7 @@ export const getTrc20Transactions = async ({
   address,
   network = 'mainnet',
 }: GetBalance): Promise<Array<any>> => {
-  const url = `/v1/accounts/${address}/transactions/trc20`;
+  const url = `v1/accounts/${address}/transactions/trc20`;
 
   const {data, success, error} = await requestTronGrid({
     url,
