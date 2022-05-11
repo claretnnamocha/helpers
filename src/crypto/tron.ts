@@ -1,4 +1,5 @@
 import tron from '@cobo/tron';
+import tronweb from 'tronweb';
 import fetch from 'node-fetch';
 import BigNumber from 'bignumber.js';
 import {
@@ -50,7 +51,7 @@ const requestTronGrid = async ({
   return response.json();
 };
 
-const getLatestBlock = async ({network = 'mainnet'}: Network ) => {
+const getLatestBlock = async ({network = 'mainnet'}: Network) => {
   const {
     blockID: hash,
     block_header: {
@@ -263,4 +264,8 @@ export const getTrc20Transactions = async ({
   if (!success) throw new Error(error);
 
   return data;
+};
+
+export const toHex = (address: string) => {
+  return tronweb.address.toHex(address);
 };
