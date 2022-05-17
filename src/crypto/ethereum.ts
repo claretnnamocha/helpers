@@ -151,14 +151,14 @@ export const estimateERC20GasFee = async ({
     from,
     to: tokenContract.address,
     data,
-    gasPrice: ethers.utils.hexlify(gasPrice),
+    // gasPrice: ethers.utils.hexlify(gasPrice),
     nonce,
   };
   let gasLimit: ethers.BigNumber | number;
   gasLimit = await provider.estimateGas(txObject);
   gasLimit = Math.ceil(gasLimit.toNumber());
 
-  txObject.gasLimit = ethers.utils.hexlify(gasLimit);
+  // txObject.gasLimit = ethers.utils.hexlify(gasLimit);
 
   const fee: any = await provider.estimateGas(txObject);
   const wei = fee.toNumber();
