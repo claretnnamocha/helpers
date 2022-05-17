@@ -95,14 +95,6 @@ export const estimateEthGasFee = async ({
   const to = Web3.utils.toChecksumAddress(address);
   const ether: any = ethers.utils.parseEther(amount.toString());
   const provider: JsonRpcProvider = getProvider({network});
-  const {address: sender}: Wallet = importEthAddress({
-    network,
-    privateKey,
-  });
-
-  // const balance: ethers.BigNumber = await provider.getBalance(sender);
-
-  // if (balance.lt(ether)) throw new Error('Insufficient balance');
 
   const value = ether.toHexString();
   const txObject = {to, value};
