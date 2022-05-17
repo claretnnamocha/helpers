@@ -122,19 +122,19 @@ export const estimateERC20GasFee = async ({
   network = 'homestead',
 }: SendErc20): Promise<Amount> => {
   const to = Web3.utils.toChecksumAddress(address);
-  const value: ethers.BigNumber = ethers.utils.parseUnits(
-      amount.toString(),
-      decimals,
-  );
+  // const value: ethers.BigNumber = ethers.utils.parseUnits(
+  //     amount.toString(),
+  //     decimals,
+  // );
 
   const provider: JsonRpcProvider = getProvider({network});
   const signer = new ethers.Wallet(privateKey, provider);
   const from = signer.address;
   const tokenContract = getERC20Contract({contractAddress, signer});
 
-  const balance: ethers.BigNumber = await tokenContract.balanceOf(from);
+  // const balance: ethers.BigNumber = await tokenContract.balanceOf(from);
 
-  if (balance.lt(value)) throw new Error('Insufficient ERC20 balance');
+  // if (balance.lt(value)) throw new Error('Insufficient ERC20 balance');
 
   const data = tokenContract.interface.encodeFunctionData('transfer', [
     to,
@@ -158,7 +158,7 @@ export const estimateERC20GasFee = async ({
   gasLimit = await provider.estimateGas(txObject);
   gasLimit = Math.ceil(gasLimit.toNumber());
 
-  txObject.gasLimit = ethers.utils.hexlify(gasLimit);
+  // txObject.gasLimit = ethers.utils.hexlify(gasLimit);
 
   const fee: any = await provider.estimateGas(txObject);
   const wei = fee.toNumber();
