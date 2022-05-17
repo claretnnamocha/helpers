@@ -158,7 +158,7 @@ export const estimateERC20GasFee = async ({
   gasLimit = await provider.estimateGas(txObject);
   gasLimit = Math.ceil(gasLimit.toNumber());
 
-  // txObject.gasLimit = ethers.utils.hexlify(gasLimit);
+  txObject.gasLimit = ethers.utils.hexlify(gasLimit);
 
   const fee: any = await provider.estimateGas(txObject);
   const wei = fee.toNumber();
