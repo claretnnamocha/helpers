@@ -115,9 +115,9 @@ const estimateBtcFee = async ({
 
   amounts = amounts.map((amount) => parseBTC(amount));
 
-  const total = amounts.reduce((a, b) => a + b, 0);
+  // const total = amounts.reduce((a, b) => a + b, 0);
 
-  if (total > balance) throw new Error('Insufficient balance');
+  // if (total > balance) throw new Error('Insufficient balance');
 
   const utxos: Array<UTXO> = await getUtxos({address: sender, testnet});
 
