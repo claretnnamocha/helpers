@@ -113,7 +113,7 @@ const estimateBtcFee = async ({
     testnet,
   });
 
-  amounts = amounts.map((amount) => parseBTC(amount));
+  amounts = amounts.map((amount: number) => parseBTC(amount));
 
   // const total = amounts.reduce((a, b) => a + b, 0);
 
@@ -130,6 +130,7 @@ const estimateBtcFee = async ({
     psbt.addOutput({address, value: amount});
 
     balance -= amount;
+    console.log(balance);
   }
 
   psbt.addOutput({address: sender, value: balance});
