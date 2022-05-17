@@ -129,8 +129,8 @@ const estimateBtcFee = async ({
 
     psbt.addOutput({address, value: amount});
 
+    console.log(balance, amount);
     balance -= amount;
-    console.log(balance);
   }
 
   psbt.addOutput({address: sender, value: balance});
