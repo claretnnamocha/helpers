@@ -90,7 +90,6 @@ export const estimateEthGasFee = async ({
   address,
   amount,
   network = 'homestead',
-  privateKey,
 }: SendEth): Promise<Amount> => {
   const to = Web3.utils.toChecksumAddress(address);
   const ether: any = ethers.utils.parseEther(amount.toString());
