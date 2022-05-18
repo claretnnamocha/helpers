@@ -95,10 +95,14 @@ export const estimateEthGasFee = async ({
   const ether: any = ethers.utils.parseEther(amount.toString());
   const provider: JsonRpcProvider = getProvider({network});
 
+  let gasPrice: ethers.BigNumber | number = await provider.getGasPrice();
+  gasPrice = gasPrice.toNumber();
+  gasPrice = Math.ceil(gasPrice);
+
   const value = ether.toHexString();
   const txObject = {to, value};
   const fee = await provider.estimateGas(txObject);
-  const wei = fee.toNumber();
+  const wei = fee.toNumber() * gasPrice;
   const eths = wei / Math.pow(10, 18);
 
   return {wei, ethers: eths};
