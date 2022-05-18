@@ -100,7 +100,7 @@ export const estimateEthGasFee = async ({
   gasPrice = Math.ceil(gasPrice);
 
   const value = ether.toHexString();
-  const txObject = {to, value};
+  const txObject = {to, value, gasPrice: ethers.utils.hexlify(gasPrice)};
   const fee = await provider.estimateGas(txObject);
   const wei = fee.toNumber() * gasPrice;
   const eths = wei / Math.pow(10, 18);
