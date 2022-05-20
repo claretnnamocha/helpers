@@ -1,4 +1,3 @@
-
 type network = 'mainnet' | 'shasta' | 'nile';
 
 export interface GetBalance {
@@ -42,18 +41,15 @@ export interface Wallet {
 
 export interface SendTrx {
   network?: network;
-  amount: number;
+  amount?: number;
   address: string;
   privateKey: string;
+  backer?: string;
 }
 
-export interface SendTrc20 {
-  network?: network;
-  amount: number;
+export interface SendTrc20 extends SendTrx {
   decimals: number;
-  address: string;
   contractAddress: string;
-  privateKey: string;
 }
 
 export interface ImportAddressFromMnemonic {

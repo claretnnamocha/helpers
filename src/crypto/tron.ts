@@ -1,7 +1,7 @@
 import tron from '@cobo/tron';
 import tronweb from 'tronweb';
 import fetch from 'node-fetch';
-import BigNumber from 'bignumber.js';
+import {BigNumber} from 'bignumber.js';
 import {
   ImportAddress,
   ImportAddressFromMnemonic,
@@ -268,4 +268,70 @@ export const getTrc20Transactions = async ({
 
 export const toHex = (address: string) => {
   return tronweb.address.toHex(address);
+};
+
+export const drainTrx = async ({
+  privateKey,
+  address: to,
+  network = 'mainnet',
+}: SendTrx) => {
+  const wallet = tron.fromTronPrivateKey(privateKey);
+  const address = wallet.getAddress();
+  const latestBlock = await getLatestBlock({network});
+
+  const {sun} = await getTrxBalance({
+    address,
+    network,
+  });
+
+  const amount = new BigNumber(sun).minus(new BigNumber(Math.pow(10, 6)));
+
+  const transaction = wallet.generateTransaction(
+      to,
+      amount,
+      'TRX',
+      latestBlock,
+  );
+
+  return broadcastTransaction({network, transaction});
+};
+
+export const drainTRC20Token = async ({
+  address: to,
+  contractAddress,
+  privateKey,
+  decimals,
+  network = 'mainnet',
+  backer = null,
+}: SendTrc20) => {
+  const wallet = tron.fromTronPrivateKey(privateKey);
+  const address = wallet.getAddress();
+  const latestBlock = await getLatestBlock({network});
+
+  const {sun: amount} = await getTRC20Balance({
+    address,
+    network,
+    contractAddress,
+    decimals,
+  });
+
+  if (backer) {
+    const {address} = importTrxAddress({privateKey});
+
+    await sendTrx({
+      privateKey: backer,
+      amount: 1,
+      network,
+      address,
+    });
+  }
+
+  const transaction = wallet.transferTRC20Token(
+      contractAddress,
+      to,
+      amount,
+      latestBlock,
+  );
+
+  return broadcastTransaction({network, transaction});
 };
