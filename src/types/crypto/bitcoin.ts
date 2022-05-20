@@ -17,6 +17,7 @@ export interface CreateAddress {
 
 export interface TransactionReceipt {
   transactionId: string;
+  amount?: any;
 }
 
 export interface Amount {

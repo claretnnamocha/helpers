@@ -209,12 +209,12 @@ const drainBtc = async ({
   keyPair,
   testnet = false,
 }): Promise<TransactionReceipt> => {
-  const {satoshi: balance}: Amount = await getBtcBalance({
+  const {satoshi: amount}: Amount = await getBtcBalance({
     address: sender,
     testnet,
   });
 
-  if (balance < minimumBalance) throw new Error('Insufficient balance');
+  if (amount < minimumBalance) throw new Error('Insufficient balance');
 
   const utxos: Array<UTXO> = await getUtxos({address: sender, testnet});
 
@@ -225,11 +225,11 @@ const drainBtc = async ({
   const {satoshi: fee} = await estimateFee({
     wif,
     addresses: [to],
-    amounts: [satoshiToBtc(balance)],
+    amounts: [satoshiToBtc(amount)],
     testnet,
   });
 
-  psbt.addOutput({address: to, value: balance - fee});
+  psbt.addOutput({address: to, value: amount - fee});
 
   psbt.signAllInputs(keyPair);
   psbt.validateSignaturesOfAllInputs(validator);
@@ -248,7 +248,7 @@ const drainBtc = async ({
 
   if (!sent) throw new Error(text);
 
-  return {transactionId: text};
+  return {transactionId: text, amount};
 };
 
 const getBtcNetwork = ({testnet = false}: NetworkOnly) => {
