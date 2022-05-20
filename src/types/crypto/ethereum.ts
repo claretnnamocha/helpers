@@ -17,7 +17,7 @@ export interface GetERC20Balance {
   network?: network;
   address: string;
   contractAddress: string;
-  decimals: number;
+  decimals?: number;
 }
 
 export interface GetTransaction {
@@ -57,7 +57,7 @@ export interface SendEth {
 export interface SendErc20 {
   network?: network;
   amount: number;
-  decimals: number;
+  decimals?: number;
   address: string;
   contractAddress: string;
   privateKey: string;
@@ -81,13 +81,11 @@ export interface DrainEth {
   network?: network;
   address: string;
   privateKey: string;
+  minimumBalance?: number;
 }
 
-export interface DrainErc20 {
-  network?: network;
-  address: string;
+export interface DrainErc20 extends DrainEth {
   contractAddress: string;
-  privateKey: string;
   gasSupplierPrivateKey?: string;
 }
 

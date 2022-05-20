@@ -40,6 +40,7 @@ const IERC20_ABI = [
     'amount) external returns (bool)',
   'function transferFrom(address from, address ' +
     'to, uint256 amount) external returns (bool)',
+  'function decimals() public view returns (uint8)',
 ];
 
 const getEthRpcLink = ({network = 'homestead'}: Network): string => {
@@ -113,19 +114,19 @@ export const estimateERC20GasFee = async ({
   contractAddress,
   amount,
   privateKey,
-  decimals,
   network = 'homestead',
 }: SendErc20): Promise<Amount> => {
+  const provider: JsonRpcProvider = getProvider({network});
+  const signer = new ethers.Wallet(privateKey, provider);
+  const from = signer.address;
+  const tokenContract = getERC20Contract({contractAddress, signer});
+  const decimals: number = await tokenContract.decimals();
+
   const to = Web3.utils.toChecksumAddress(address);
   const value: ethers.BigNumber = ethers.utils.parseUnits(
       amount.toString(),
       decimals,
   );
-
-  const provider: JsonRpcProvider = getProvider({network});
-  const signer = new ethers.Wallet(privateKey, provider);
-  const from = signer.address;
-  const tokenContract = getERC20Contract({contractAddress, signer});
 
   const balance: ethers.BigNumber = await tokenContract.balanceOf(from);
 
@@ -195,20 +196,22 @@ export const sendERC20Token = async ({
   contractAddress,
   amount,
   privateKey,
-  decimals,
   network = 'homestead',
 }: SendErc20): Promise<TransactionResponse> => {
   const to = Web3.utils.toChecksumAddress(address);
-  const value: ethers.BigNumber = ethers.BigNumber.from(
-      new BigNumber(amount)
-          .multipliedBy(new BigNumber(Math.pow(10, decimals)))
-          .toString(),
-  );
 
   const provider: JsonRpcProvider = getProvider({network});
   const signer = new ethers.Wallet(privateKey, provider);
   const from = signer.address;
   const tokenContract = getERC20Contract({contractAddress, signer});
+
+  const decimals: number = await tokenContract.decimals();
+
+  const value: ethers.BigNumber = ethers.BigNumber.from(
+      new BigNumber(amount)
+          .multipliedBy(new BigNumber(Math.pow(10, decimals)))
+          .toString(),
+  );
 
   const balance: ethers.BigNumber = await tokenContract.balanceOf(from);
 
@@ -259,7 +262,6 @@ export const getEthBalance = async ({
 export const getERC20Balance = async ({
   address,
   contractAddress,
-  decimals,
   network = 'homestead',
 }: GetERC20Balance): Promise<Amount> => {
   const signer: JsonRpcProvider = getProvider({network});
@@ -267,6 +269,7 @@ export const getERC20Balance = async ({
   const tokenContract = getERC20Contract({contractAddress, signer});
 
   const balance: ethers.BigNumber = await tokenContract.balanceOf(address);
+  const decimals: number = await tokenContract.decimals();
 
   const wei = parseInt(balance.toString());
   const eths = wei / Math.pow(10, decimals);
@@ -372,6 +375,7 @@ export const drainEth = async ({
   address,
   network = 'homestead',
   privateKey,
+  minimumBalance = 500000000000000,
 }: DrainEth): Promise<DrainResponse> => {
   const to = Web3.utils.toChecksumAddress(address);
 
@@ -381,6 +385,10 @@ export const drainEth = async ({
     privateKey,
   });
   const amount: ethers.BigNumber = await provider.getBalance(sender);
+
+  if (new BigNumber(amount.toString()).lt(new BigNumber(minimumBalance))) {
+    throw new Error('Insufficient balance');
+  }
 
   const value = amount.toHexString();
 
@@ -419,6 +427,7 @@ export const drainERC20Token = async ({
   privateKey,
   gasSupplierPrivateKey,
   network = 'homestead',
+  minimumBalance = 10,
 }: DrainErc20): Promise<DrainResponse> => {
   const to = Web3.utils.toChecksumAddress(address);
 
@@ -428,6 +437,15 @@ export const drainERC20Token = async ({
   const tokenContract = getERC20Contract({contractAddress, signer});
 
   const amount: ethers.BigNumber = await tokenContract.balanceOf(from);
+  const decimals: number = await tokenContract.decimals();
+
+  if (
+    new BigNumber(amount.toString()).lt(
+        new BigNumber(minimumBalance * Math.pow(10, decimals)),
+    )
+  ) {
+    throw new Error('Insufficient balance');
+  }
 
   const data = tokenContract.interface.encodeFunctionData('transfer', [
     to,

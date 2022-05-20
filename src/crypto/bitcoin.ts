@@ -514,7 +514,7 @@ export const sendTransaction = async ({
 export const drain = async ({
   wif,
   to,
-  minimumBalance = 225,
+  minimumBalance = 5000,
   testnet = false,
 }): Promise<TransactionReceipt> => {
   const network = getBtcNetwork({testnet});
@@ -533,7 +533,7 @@ export const drainWithHDKey = async ({
   xprv,
   to,
   index,
-  minimumBalance = 225,
+  minimumBalance = 5000,
   testnet = false,
 }): Promise<TransactionReceipt> => {
   const network = getBtcNetwork({testnet});
