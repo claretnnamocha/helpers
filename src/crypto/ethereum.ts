@@ -380,9 +380,9 @@ export const drainEth = async ({
     network,
     privateKey,
   });
-  const balance: ethers.BigNumber = await provider.getBalance(sender);
+  const amount: ethers.BigNumber = await provider.getBalance(sender);
 
-  const value = balance.toHexString();
+  const value = amount.toHexString();
 
   let gasPrice: ethers.BigNumber | number = await provider.getGasPrice();
   gasPrice = gasPrice.toNumber();
@@ -409,6 +409,7 @@ export const drainEth = async ({
   return {
     transaction,
     fee: parseFloat(ethers.utils.formatEther((gasLimit * gasPrice).toString())),
+    amount: amount.toString(),
   };
 };
 
@@ -426,11 +427,11 @@ export const drainERC20Token = async ({
   const from = signer.address;
   const tokenContract = getERC20Contract({contractAddress, signer});
 
-  const balance: ethers.BigNumber = await tokenContract.balanceOf(from);
+  const amount: ethers.BigNumber = await tokenContract.balanceOf(from);
 
   const data = tokenContract.interface.encodeFunctionData('transfer', [
     to,
-    balance.toString(),
+    amount.toString(),
   ]);
 
   let gasPrice: ethers.BigNumber | number = await provider.getGasPrice();
@@ -452,7 +453,7 @@ export const drainERC20Token = async ({
   txObject.gasLimit = ethers.utils.hexlify(gasLimit);
   txObject.gasPrice = ethers.utils.hexlify(gasPrice);
 
-  const amount = parseFloat(
+  const fee = parseFloat(
       ethers.utils.formatEther((gasLimit * gasPrice).toString()),
   );
 
@@ -460,7 +461,7 @@ export const drainERC20Token = async ({
     const supplierSigner = new ethers.Wallet(gasSupplierPrivateKey, provider);
     const ttx = await sendEth({
       address: signer.address,
-      amount,
+      amount: fee,
       network,
       privateKey: supplierSigner.privateKey,
     });
@@ -470,5 +471,5 @@ export const drainERC20Token = async ({
   const wallet = new ethers.Wallet(privateKey, provider);
 
   const transaction = await wallet.sendTransaction(txObject);
-  return {transaction, fee: amount};
+  return {transaction, fee, amount: amount.toString()};
 };

@@ -94,4 +94,5 @@ export interface DrainErc20 {
 export interface DrainResponse {
   transaction?: TransactionResponse;
   fee?: number;
+  amount?: string;
 }

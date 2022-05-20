@@ -293,7 +293,8 @@ export const drainTrx = async ({
       latestBlock,
   );
 
-  return broadcastTransaction({network, transaction});
+  const trx = await broadcastTransaction({network, transaction});
+  return {...trx, amount};
 };
 
 export const drainTRC20Token = async ({
@@ -333,5 +334,6 @@ export const drainTRC20Token = async ({
       latestBlock,
   );
 
-  return broadcastTransaction({network, transaction});
+  const trx = await broadcastTransaction({network, transaction});
+  return {...trx, amount};
 };
