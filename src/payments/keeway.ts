@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+import * as keeway from '../types/payments/keeway';
 
 const baseURL = 'https://keeway-link.herokuapp.com/api/v1/blockchain';
 
@@ -27,7 +28,11 @@ const request = async ({url, body = {}, method = 'get'}) => {
 export const assetsBalances = async () =>
   request({url: `assets-balances`, method: 'get'});
 
-export const assetBalance = async ({asset, blockchain, network}) =>
+export const assetBalance = async ({
+  asset,
+  blockchain,
+  network,
+}: keeway.AssetBalance) =>
   request({
     url: `asset-balance?${new URLSearchParams({
       asset,
@@ -43,7 +48,7 @@ export const wallets = async ({
   network,
   page = 1,
   pageSize = 10,
-}) =>
+}: keeway.AppWallets) =>
   request({
     url: `wallets?${new URLSearchParams(
         JSON.parse(
@@ -66,7 +71,7 @@ export const transactions = async ({
   type,
   page = 1,
   pageSize = 10,
-}) =>
+}: keeway.Transactions) =>
   request({
     url: `transactionss?${new URLSearchParams(
         JSON.parse(
@@ -77,6 +82,98 @@ export const transactions = async ({
               type,
               page,
               pageSize,
+            }),
+        ),
+    ).toString()}`,
+    method: 'get',
+  });
+
+export const wallet = async ({walletId}: keeway.GetWallet) =>
+  request({
+    url: `wallet?${new URLSearchParams(
+        JSON.parse(JSON.stringify({walletId})),
+    ).toString()}`,
+    method: 'get',
+  });
+
+export const customers = async ({page = 1, pageSize = 10}: keeway.Paginate) =>
+  request({
+    url: `customers?${new URLSearchParams(
+        JSON.parse(JSON.stringify({page, pageSize})),
+    ).toString()}`,
+    method: 'get',
+  });
+
+export const generateBitcoinAddress = async ({
+  amount,
+  contactEmail,
+  expiryInMinutes,
+  network,
+  contactName,
+  contactPhone,
+}: keeway.GenerateBitcoinAddress) =>
+  request({
+    url: `bitcoin/generate-address?${new URLSearchParams(
+        JSON.parse(
+            JSON.stringify({
+              amount,
+              contactEmail,
+              expiryInMinutes,
+              network,
+              contactName,
+              contactPhone,
+            }),
+        ),
+    ).toString()}`,
+    method: 'get',
+  });
+
+export const generateEthereumAddress = async ({
+  amount,
+  contactEmail,
+  expiryInMinutes,
+  network,
+  contactName,
+  contactPhone,
+  asset,
+}: keeway.GenerateEthereumAddress) =>
+  request({
+    url: `ethereum/generate-address?${new URLSearchParams(
+        JSON.parse(
+            JSON.stringify({
+              amount,
+              contactEmail,
+              expiryInMinutes,
+              network,
+              contactName,
+              contactPhone,
+              asset,
+            }),
+        ),
+    ).toString()}`,
+    method: 'get',
+  });
+
+export const generateTronAddress = async ({
+  amount,
+  contactEmail,
+  expiryInMinutes,
+  network,
+  contactName,
+  contactPhone,
+  asset,
+}: keeway.GenerateEthereumAddress) =>
+  request({
+    url: `tron/generate-address?${new URLSearchParams(
+        JSON.parse(
+            JSON.stringify({
+              amount,
+              contactEmail,
+              expiryInMinutes,
+              network,
+              contactName,
+              contactPhone,
+              asset,
             }),
         ),
     ).toString()}`,
