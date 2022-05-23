@@ -6,7 +6,7 @@ const request = async ({url, body = {}, method = 'get'}) => {
   const {KEEWAY_SECRET_KEY} = process.env;
 
   try {
-    return await fetch(`${baseURL}/${url}`, {
+    const response = await fetch(`${baseURL}/${url}`, {
       body: Object.keys(body).length ? JSON.stringify(body) : undefined,
       method,
       headers: {
@@ -14,6 +14,8 @@ const request = async ({url, body = {}, method = 'get'}) => {
         'content-type': 'application/json',
       },
     });
+
+    return response.json();
   } catch (error) {
     return {
       status: false,
