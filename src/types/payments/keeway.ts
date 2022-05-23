@@ -29,9 +29,9 @@ export interface GenerateBitcoinAddress {
   amount: number;
   expiryInMinutes: number;
   network: string;
-  contactEmail: number;
-  contactPhone?: number;
-  contactName?: number;
+  contactEmail: String;
+  contactPhone?: String;
+  contactName?: String;
 }
 
 export interface GenerateEthereumAddress extends GenerateBitcoinAddress {
