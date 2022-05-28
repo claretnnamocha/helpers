@@ -1,10 +1,23 @@
-export * as gis from './src/gis';
-export * as crypto from './src/crypto';
-export * as jwt from './src/jwt';
-export * as jobs from './src/jobs';
-export * as mail from './src/mail';
-export * as payments from './src/payments';
-export {response} from './src/response';
-export * as sms from './src/sms';
-export * as storage from './src/storage';
-export * as utilities from './src/utilities';
+import * as gis from './src/gis';
+import * as crypto from './src/crypto';
+import * as jwt from './src/jwt';
+import * as jobs from './src/jobs';
+import * as mail from './src/mail';
+import * as payments from './src/payments';
+import {response} from './src/response';
+import * as sms from './src/sms';
+import * as storage from './src/storage';
+import * as utilities from './src/utilities';
+
+export {
+  gis,
+  crypto,
+  jwt,
+  jobs,
+  mail,
+  payments,
+  response,
+  sms,
+  storage,
+  utilities,
+};
