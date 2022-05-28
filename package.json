@@ -3,7 +3,6 @@
   "version": "2.0.0",
   "main": "index.ts",
   "repository": "https://github.com/claretnnamocha/helpers.git",
-  "type": "module",
   "author": "Claret Nnamocha <devclareo@gmail.com>",
   "license": "MIT",
   "private": false,
