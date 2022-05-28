@@ -77,7 +77,7 @@ describe('--ethereum--', () => {
     it('can get ETH balance', async () => {
       const balance = await ethereum.getEthBalance({
         address,
-        network: 'ropsten',
+        network: 'kovan',
       });
 
       assert.ok('ethers' in balance);
@@ -87,7 +87,7 @@ describe('--ethereum--', () => {
     it('can get ERC20 token balance (cUSDT)', async () => {
       const balance = await ethereum.getERC20Balance({
         address,
-        network: 'ropsten',
+        network: 'kovan',
         contractAddress: '0xF6958Cf3127e62d3EB26c79F4f45d3F3b2CcdeD4',
         decimals: 18,
       });
@@ -112,7 +112,7 @@ describe('--ethereum--', () => {
         address,
         amount: 0.000001,
         privateKey,
-        network: 'ropsten',
+        network: 'kovan',
       });
 
       assert.ok(hash);
@@ -123,7 +123,7 @@ describe('--ethereum--', () => {
         address,
         amount: 1,
         privateKey,
-        network: 'ropsten',
+        network: 'kovan',
         contractAddress: '0xF6958Cf3127e62d3EB26c79F4f45d3F3b2CcdeD4',
         decimals: 8,
       });
@@ -152,7 +152,7 @@ describe('--ethereum--', () => {
       } = await ethereum.drainEth({
         address,
         privateKey,
-        network: 'rinkeby',
+        network: 'kovan',
       });
 
       assert.ok(hash);
@@ -164,7 +164,7 @@ describe('--ethereum--', () => {
       } = await ethereum.drainERC20Token({
         address,
         privateKey,
-        network: 'rinkeby',
+        network: 'kovan',
         contractAddress: '0xD9BA894E0097f8cC2BBc9D24D308b98e36dc6D02',
         gasSupplierPrivateKey,
       });
