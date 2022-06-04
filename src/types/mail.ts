@@ -6,3 +6,8 @@ export interface send {
   from?: string;
   fromName?: string;
 }
+
+export interface UpsertContact {
+  email: string;
+  [key: string]: any;
+}
