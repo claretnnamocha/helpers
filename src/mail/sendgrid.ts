@@ -54,7 +54,7 @@ export const send = async ({
 export const upsertContact = async (fields: mail.UpsertContact) => {
   try {
     return request({
-      body: fields,
+      body: {contacts: [fields]},
       method: 'put',
       url: 'marketing/contacts',
     });
