@@ -494,6 +494,32 @@ export const sendWithHDKey = async ({
   return sendBtc({addresses, amounts, fee, keyPair, testnet, sender});
 };
 
+export const sendWithMnemonic = async ({
+  mnemonic,
+  addresses,
+  amounts,
+  index,
+  fee,
+  testnet = false,
+}): Promise<TransactionReceipt> => {
+  const network = getBtcNetwork({testnet});
+
+  const {address: sender, wif}: Wallet = createBtcAddressFromMnemonic({
+    mnemonic,
+    index,
+    testnet,
+  });
+
+  const keyPair = ECPair.fromWIF(wif, network);
+
+  if (!fee) {
+    const {satoshi} = await estimateFee({wif, addresses, amounts, testnet});
+    fee = satoshi;
+  }
+
+  return sendBtc({addresses, amounts, fee, keyPair, testnet, sender});
+};
+
 export const sendTransaction = async ({
   hash: body,
   testnet = false,
@@ -540,6 +566,26 @@ export const drainWithHDKey = async ({
 
   const {address: sender, wif}: Wallet = createBtcAddressFromHDKey({
     hdkey: xprv,
+    index,
+    testnet,
+  });
+
+  const keyPair = ECPair.fromWIF(wif, network);
+
+  return drainBtc({to, keyPair, testnet, sender, minimumBalance});
+};
+
+export const drainWithMnemonic = async ({
+  mnemonic,
+  to,
+  index,
+  minimumBalance = 5000,
+  testnet = false,
+}): Promise<TransactionReceipt> => {
+  const network = getBtcNetwork({testnet});
+
+  const {address: sender, wif}: Wallet = createBtcAddressFromMnemonic({
+    mnemonic,
     index,
     testnet,
   });
