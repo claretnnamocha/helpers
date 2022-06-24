@@ -80,7 +80,8 @@ export const parseTrx = (trx: number) => {
 };
 
 export const sunToTrx = (sun: number) => {
-  return sun / Math.pow(10, 6);
+  const trx = new BigNumber(sun).div(new BigNumber(Math.pow(10, 6))).toFixed();
+  return parseFloat(trx);
 };
 
 export const createTrxAddress = (): Wallet => {
@@ -163,7 +164,10 @@ export const getTRC20Balance = async ({
 
     if (tokenContractAddress === contractAddress) {
       const sun: number = parseInt(token[tokenContractAddress]);
-      const trx = sun / Math.pow(10, decimals);
+      let trx: any = new BigNumber(sun)
+          .div(new BigNumber(Math.pow(10, 6)))
+          .toFixed();
+      trx = parseFloat(trx);
       return {sun, trx};
     }
   }
