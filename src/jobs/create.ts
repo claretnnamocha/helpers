@@ -6,5 +6,5 @@ export const create = ({
   options = {},
 }: jobs.create): Bull.Queue => {
   const {REDIS_URL = null} = process.env;
-  return new Bull(queueName, REDIS_URL, options);
+  return new Bull(queueName, null, options);
 };
