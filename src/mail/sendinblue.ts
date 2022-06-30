@@ -1,4 +1,5 @@
 import {generateReciepient} from '.';
+import fetch from 'node-fetch';
 import {mail} from '../types';
 
 export const send = async ({
