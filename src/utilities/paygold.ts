@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import fetch from 'node-fetch';
+import {URLSearchParams} from 'url';
 const billerProducts = [
   {
     name: 'MTN Data 1GB (SME)',

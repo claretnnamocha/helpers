@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+import {URLSearchParams} from 'url';
 import * as keeway from '../types/payments/keeway';
 
 const baseURL = 'https://keeway-link.herokuapp.com/api/v1/blockchain';
