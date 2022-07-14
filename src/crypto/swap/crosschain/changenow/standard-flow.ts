@@ -19,8 +19,6 @@ export const createExchangeTransaction = async (body: {
   amount: string;
   refundAddress?: string;
 }) => {
-  body.refundAddress = body?.refundAddress || body.address;
-
   return request({
     url: `transactions/${getApiKey()}`,
     method: 'post',

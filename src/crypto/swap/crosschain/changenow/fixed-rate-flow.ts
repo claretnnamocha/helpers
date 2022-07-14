@@ -58,8 +58,6 @@ export const createFixedRateExchange = async (body: {
   amount: string;
   refundAddress?: string;
 }) => {
-  body.refundAddress = body?.refundAddress || body.address;
-
   return request({
     url: `transactions/fixed-rate/${getApiKey()}`,
     method: 'post',
@@ -74,8 +72,6 @@ export const createReverseFixedRateExchange = async (body: {
   result: string;
   refundAddress?: string;
 }) => {
-  body.refundAddress = body?.refundAddress || body.address;
-
   return request({
     url: `transactions/fixed-rate/from-result/${getApiKey()}`,
     method: 'post',

@@ -116,7 +116,6 @@ export const createExchangeTransaction = async (body: {
   type?: 'direct' | 'reverse';
   rateId?: string;
 }) => {
-  body.refundAddress = body?.refundAddress || body.address;
   return request({
     url: `exchange`,
     method: 'post',
