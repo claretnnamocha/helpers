@@ -14,7 +14,7 @@ import {
   Network,
 } from '../types/crypto/tron';
 
-const getPath = (index: number) => `m/49'/194'/0'/0/${index}`;
+const getPath = (index: number) => `m/49'/194'/0'/0/${index}'`;
 
 const getTronGridLink = ({network = 'mainnet'}): string => {
   const {TRONGRID_API_KEY} = process.env;

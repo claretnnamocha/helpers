@@ -43,6 +43,8 @@ const IERC20_ABI = [
   'function decimals() public view returns (uint8)',
 ];
 
+const getPath = (index: number) => `m/44'/60'/0'/0/${index}'`;
+
 const getEthRpcLink = ({network = 'homestead'}: Network): string => {
   if (['bsc', 'bsc-testnet'].includes(network)) {
     return network === 'bsc' ?
@@ -283,7 +285,7 @@ export const createEthAddressFromMnemonic = ({
 }: ImportAddressFromMnemonic): Wallet => {
   const {address, privateKey} = ethers.Wallet.fromMnemonic(
       mnemonic,
-      `m/44'/60'/0'/0/${index}`,
+      getPath(index),
   );
   return {address, privateKey};
 };
@@ -306,7 +308,7 @@ export const createEthAddressFromXPrv = ({
 }: ImportAddressFromXPrv): Wallet => {
   const {address, privateKey} = ethers.utils.HDNode.fromExtendedKey(
       xprv,
-  ).derivePath(`m/44'/60'/0'/0/${index}`);
+  ).derivePath(getPath(index));
 
   return {address, privateKey};
 };

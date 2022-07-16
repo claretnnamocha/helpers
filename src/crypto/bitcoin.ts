@@ -41,7 +41,7 @@ const getBaseURL = ({testnet = false}: NetworkOnly) => {
     'https://blockstream.info/api';
 };
 
-const getPath = (index: number) => `m/49'/1'/0'/0/${index}`;
+const getPath = (index: number) => `m/49'/1'/0'/0/${index}'`;
 
 const calculateTxFee = async ({testnet = false, tx}: CalculateTxFee) => {
   let fee: number;
