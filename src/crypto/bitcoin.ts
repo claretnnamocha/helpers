@@ -409,12 +409,27 @@ export const getBtcBalance = async ({
   address,
   testnet = false,
 }: GetBalance): Promise<Amount> => {
-  const link = testnet ?
-    `http://api.blockcypher.com/v1/btc/test3/addrs/${address}` :
-    `https://blockchain.info/address/${address}?format=jsonrawaddr`;
-  const response = await fetch(link);
-  const data: any = await response.json();
-  const satoshi: number = data.final_balance;
+  let link = getBaseURL({testnet});
+  link += `/address/${address}/utxo`;
+
+  let response = await fetch(link);
+  let data: any;
+  let satoshi: number;
+  if (response.status === 200) {
+    data = await response.json();
+    satoshi = 0;
+    for (let index = 0; index < data.length; index++) {
+      const utxo = data[index];
+      satoshi += utxo.value;
+    }
+  } else {
+    link = testnet ?
+      `http://api.blockcypher.com/v1/btc/test3/addrs/${address}` :
+      `https://blockchain.info/address/${address}?format=jsonrawaddr`;
+    response = await fetch(link);
+    data = await response.json();
+    satoshi = parseInt(data.final_balance.toString());
+  }
   const btc: number = satoshiToBtc(satoshi);
 
   return {satoshi, btc};
