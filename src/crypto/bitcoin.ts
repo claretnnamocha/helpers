@@ -25,6 +25,7 @@ import {
   CalculateTxFee,
   GatherUTXOS,
   SendTransaction,
+  GetBtcTransaction,
 } from '../types/crypto/bitcoin';
 
 const ECPair = ecPairFactory(ecc);
@@ -615,6 +616,15 @@ export const getBtcTransactions = async ({
   testnet = false,
 }: GetBalance): Promise<any> => {
   const link = getBaseURL({testnet}) + `/address/${address}/txs`;
+  const response = await fetch(link);
+  return response.json();
+};
+
+export const getBtcTransaction = async ({
+  transactionId,
+  testnet = false,
+}: GetBtcTransaction): Promise<any> => {
+  const link = getBaseURL({testnet}) + `/tx/${transactionId}`;
   const response = await fetch(link);
   return response.json();
 };

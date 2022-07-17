@@ -5,6 +5,10 @@ export interface GetBalance {
   testnet?: boolean;
   address: string;
 }
+export interface GetBtcTransaction {
+  testnet?: boolean;
+  transactionId: string;
+}
 
 export interface ImportAddress {
   wif: string;

@@ -12,6 +12,7 @@ import {
   Wallet,
   Amount,
   Network,
+  GetTransaction,
 } from '../types/crypto/tron';
 
 const getPath = (index: number) => `m/49'/194'/0'/0/${index}'`;
@@ -247,6 +248,23 @@ export const getTrxTransactions = async ({
   const {data, success, error} = await requestTronGrid({
     url,
     network,
+  });
+
+  if (!success) throw new Error(error);
+
+  return data;
+};
+
+export const getTransaction = async ({
+  hash,
+  network = 'mainnet',
+}: GetTransaction): Promise<Array<any>> => {
+  const url = `/wallet/gettransactionbyid`;
+
+  const {data, success, error} = await requestTronGrid({
+    url,
+    network,
+    body: {value: hash},
   });
 
   if (!success) throw new Error(error);
