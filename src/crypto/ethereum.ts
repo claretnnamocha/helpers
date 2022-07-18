@@ -377,7 +377,6 @@ export const drainEth = async ({
   address,
   network = 'homestead',
   privateKey,
-  minimumBalance = 500000000000000,
 }: DrainEth): Promise<DrainResponse> => {
   const to = Web3.utils.toChecksumAddress(address);
 
@@ -387,10 +386,6 @@ export const drainEth = async ({
     privateKey,
   });
   const amount: ethers.BigNumber = await provider.getBalance(sender);
-
-  if (new BigNumber(amount.toString()).lt(new BigNumber(minimumBalance))) {
-    throw new Error('Insufficient balance');
-  }
 
   const value = amount.toHexString();
 
