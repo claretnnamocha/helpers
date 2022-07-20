@@ -145,26 +145,21 @@ export const getTrxBalance = async ({
 export const getTRC20Balance = async ({
   address,
   contractAddress,
-  decimals,
   network = 'mainnet',
 }): Promise<Amount> => {
   const {data}: any = await requestTronGrid({
     network,
-    url: `v1/accounts/${address}`,
+    url: `v1/accounts/${address}/transactions/trc20`,
   });
 
   if (!data.length) return {sun: 0, trx: 0};
 
-  const [{trc20}] = data;
-
-  if (!trc20.length) return {sun: 0, trx: 0};
-
-  for (let index = 0; index < trc20.length; index++) {
-    const token = trc20[index];
-    const tokenContractAddress = Object.keys(token)[0];
+  for (let index = 0; index < data.length; index++) {
+    const token = data[index];
+    const tokenContractAddress = token.token_info.address;
 
     if (tokenContractAddress === contractAddress) {
-      const sun: number = parseInt(token[tokenContractAddress]);
+      const sun: number = parseInt(token.value);
       let trx: any = new BigNumber(sun)
           .div(new BigNumber(Math.pow(10, 6)))
           .toFixed();
@@ -222,7 +217,6 @@ export const sendTRC20Token = async ({
     address,
     network,
     contractAddress,
-    decimals,
   });
 
   if (new BigNumber(amount).gte(new BigNumber(balance))) {
@@ -259,15 +253,16 @@ export const getTransaction = async ({
   hash,
   network = 'mainnet',
 }: GetTransaction): Promise<Array<any>> => {
-  const url = `/wallet/gettransactionbyid`;
+  const url = `wallet/gettransactionbyid`;
 
-  const {data, success, error} = await requestTronGrid({
+  const data = await requestTronGrid({
     url,
     network,
     body: {value: hash},
+    method: 'post',
   });
 
-  if (!success) throw new Error(error);
+  if (!data.txID) throw new Error('Transaction not found');
 
   return data;
 };
@@ -335,7 +330,6 @@ export const drainTRC20Token = async ({
     address,
     network,
     contractAddress,
-    decimals,
   });
 
   if (backer) {

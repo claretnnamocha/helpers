@@ -45,6 +45,7 @@ export interface SendTrx {
   address: string;
   privateKey: string;
   backer?: string;
+  fee?: number;
 }
 
 export interface SendTrc20 extends SendTrx {

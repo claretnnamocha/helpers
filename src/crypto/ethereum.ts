@@ -424,7 +424,6 @@ export const drainERC20Token = async ({
   privateKey,
   gasSupplierPrivateKey,
   network = 'homestead',
-  minimumBalance = 10,
 }: DrainErc20): Promise<DrainResponse> => {
   const to = Web3.utils.toChecksumAddress(address);
 
@@ -434,15 +433,6 @@ export const drainERC20Token = async ({
   const tokenContract = getERC20Contract({contractAddress, signer});
 
   const amount: ethers.BigNumber = await tokenContract.balanceOf(from);
-  const decimals: number = await tokenContract.decimals();
-
-  if (
-    new BigNumber(amount.toString()).lt(
-        new BigNumber(minimumBalance * Math.pow(10, decimals)),
-    )
-  ) {
-    throw new Error('Insufficient balance');
-  }
 
   const data = tokenContract.interface.encodeFunctionData('transfer', [
     to,
