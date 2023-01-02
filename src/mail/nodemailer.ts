@@ -10,18 +10,23 @@ export const send = async ({
   from = '',
   fromName = '',
 }: mail.send) => {
-  const {EMAIL_FROM, EMAIL_NAME, EMAIL_PORT, EMAIL_HOST} = process.env;
+  const {
+    EMAIL_FROM,
+    EMAIL_NAME,
+    EMAIL_PORT,
+    EMAIL_HOST,
+    EMAIL_USER,
+    EMAIL_PASSWORD,
+  } = process.env;
 
   try {
-    const testAccount = await nodemailer.createTestAccount();
-
     const transporter = nodemailer.createTransport({
       host: EMAIL_HOST,
       port: parseInt(EMAIL_PORT),
       secure: true,
       auth: {
-        user: testAccount.user,
-        pass: testAccount.pass,
+        user: EMAIL_USER,
+        pass: EMAIL_PASSWORD,
       },
     });
 
@@ -35,8 +40,12 @@ export const send = async ({
       html,
     });
 
+    console.log(info.messageId);
+
     return info.messageId !== undefined;
   } catch (error) {
+    console.log(error.message);
+
     return false;
   }
 };
