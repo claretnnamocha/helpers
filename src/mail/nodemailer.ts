@@ -10,14 +10,14 @@ export const send = async ({
   from = '',
   fromName = '',
 }: mail.send) => {
-  const {EMAIL_FROM, EMAIL_NAME} = process.env;
+  const {EMAIL_FROM, EMAIL_NAME, EMAIL_PORT, EMAIL_HOST} = process.env;
 
   try {
     const testAccount = await nodemailer.createTestAccount();
 
     const transporter = nodemailer.createTransport({
-      host: 'smtp.ethereal.email',
-      port: 587,
+      host: EMAIL_HOST,
+      port: parseInt(EMAIL_PORT),
       secure: true,
       auth: {
         user: testAccount.user,
