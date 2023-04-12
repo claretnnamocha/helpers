@@ -26,7 +26,7 @@ export const send = async ({
     fd.append('html', html);
 
     const response = await fetch(
-        `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/message`,
+        `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/messages`,
         {
           method: 'post',
           headers: {
