@@ -5,7 +5,6 @@
   "repository": "https://github.com/claretnnamocha/helpers.git",
   "author": "Claret Nnamocha <devclareo@gmail.com>",
   "license": "MIT",
-  "private": false,
   "scripts": {
     "test": "mocha --require ts-node/register tests/**/*.spec.ts --timeout 120000",
     "lint": "eslint --ext .js,.ts .",
